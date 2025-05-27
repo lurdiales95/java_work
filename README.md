@@ -1,2 +1,2 @@
 # java_work
-Lizeth's Java assignments. 
+Lizeth's Java repository for Apprenti assignments. 
