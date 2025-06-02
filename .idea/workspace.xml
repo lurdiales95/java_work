@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="7b909c25-9b4c-49ca-9301-23fba8c8f531" name="Changes" comment="Adding exercises" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "lurdiales95"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/lurdiales95/java_work.git",
+    "accountId": "50ab123d-42bc-4c19-bdbf-706de0c00ce2"
+  }
+}]]></component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 7
+}]]></component>
+  <component name="ProjectId" id="2xxwCtAtoPw8z1z05q19AK736ui" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.Main.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "main",
+    "settings.editor.selected.configurable": "project.propVCSSupport.DirectoryMappings"
+  }
+}]]></component>
+  <component name="RunManager">
+    <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="Main" />
+      <module name="dog" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.Main" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="7b909c25-9b4c-49ca-9301-23fba8c8f531" name="Changes" comment="" />
+      <created>1748892907802</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1748892907802</updated>
+    </task>
+    <task id="LOCAL-00001" summary="Adding exercises">
+      <option name="closed" value="true" />
+      <created>1748893251056</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1748893251057</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Adding exercises">
+      <option name="closed" value="true" />
+      <created>1748893648360</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1748893648360</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
+    <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <ignored-roots>
+      <path value="$PROJECT_DIR$/Exercise-Arrays" />
+      <path value="$PROJECT_DIR$/Exercise_Decisions" />
+      <path value="$PROJECT_DIR$/Reservation" />
+      <path value="$PROJECT_DIR$/Scratchpad" />
+      <path value="$PROJECT_DIR$/consule_io_demo" />
+      <path value="$PROJECT_DIR$/data_types_and_variables" />
+      <path value="$PROJECT_DIR$/dog_private_class" />
+      <path value="$PROJECT_DIR$/enums_shooping_cart_exercise" />
+      <path value="$PROJECT_DIR$/exercise_console_io" />
+      <path value="$PROJECT_DIR$/exercise_enums" />
+      <path value="$PROJECT_DIR$/exercise_loops" />
+      <path value="$PROJECT_DIR$/exercise_objects_and_references" />
+      <path value="$PROJECT_DIR$/exercise_strings" />
+      <path value="$PROJECT_DIR$/notes_operator" />
+      <path value="$PROJECT_DIR$/operators_exercise" />
+      <path value="$PROJECT_DIR$/strings" />
+    </ignored-roots>
+    <MESSAGE value="Adding exercises" />
+    <option name="LAST_COMMIT_MESSAGE" value="Adding exercises" />
+  </component>
+</project>
