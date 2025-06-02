@@ -31,7 +31,7 @@ public class AdvChallenges {
 
        original[original.length - 1] = first;
 
-        System.out.println("\n Array after shifting left: ");
+        System.out.println("\nArray after shifting left: ");
         System.out.println(Arrays.toString(original));
 
         String [] student = {"Minerva", "Ginny", "Ron", "Harry", "Luna"};
@@ -48,7 +48,7 @@ public class AdvChallenges {
 
 
 }
-        System.out.println("\nstudent Names: " +Arrays.toString(student));
+        System.out.println("\nStudent Names: " +Arrays.toString(student));
         System.out.println(duplicatesFound ? "Duplicates found!" : "No duplicates.");
 
 
