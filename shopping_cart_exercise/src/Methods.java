@@ -30,7 +30,7 @@ public class Methods {
         System.out.println("Welcome to the shopping cart app!");
 
         //Prompt for tax-exempt
-        String taxExempt = promptUserForString("Are you tax-exempt? (y/n)");
+        String taxExempt = promptUserForString("\nAre you tax-exempt? (y/n)");
 
         //Address options
         String[] addresses = {"123 Main St", "456 Main St", "789 Main St"};
@@ -38,10 +38,10 @@ public class Methods {
         int addressIndex = promptUserForInt("Shipping address?") - 1;
 
         //Prompt for shipping method
-        String shipping = promptUserForString("Shipping? (standard/overnight/2day)");
+        String shipping = promptUserForString("\nShipping? (standard/overnight/2day)");
 
         //Prompt for order quantity
-        int orderQuantity = promptUserForInt("Order quantity?");
+        int orderQuantity = promptUserForInt("\nOrder quantity?");
 
         //Size options
         String[] sizes = {"small", "medium", "large"};
@@ -49,7 +49,7 @@ public class Methods {
         int sizeIndex = promptUserForInt("Size?") - 1;
 
         //Promo code
-        String promoCode = promptUserForString("Promo code for free shipping?");
+        String promoCode = promptUserForString("\nPromo code for free shipping?");
 
         // Output summary
         System.out.println("\nDetails:");
