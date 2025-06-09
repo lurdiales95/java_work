@@ -16,7 +16,7 @@ public class LockerService {
                 return locker.rentLocker();
             }
         }
-        return new Result(false, "All lockers are currently rented");
+        return new Result(false, "All lockers are currently rented.");
     }
 
     // Access a locker using locker number and pin code
@@ -35,7 +35,8 @@ public class LockerService {
             return new Result(false, "Incorrect pin code provided.");
         }
 
-        return new Result(true, "You have opened the locker!");
+        return new Result(true, "You have opened the locker.",
+                String.valueOf(locker.getLockerNumber()), locker.getPinCode());
     }
 
     // Release a locker after verifying locker number and pin code
@@ -56,9 +57,12 @@ public class LockerService {
 
         locker.releaseLocker();
 
-        return new Result(true, "Locker released successfully.");
+        return new Result(true, "Locker released successfully.",
+                String.valueOf(locker.getLockerNumber()), pinCode);
     }
 }
+
+
 
 
 

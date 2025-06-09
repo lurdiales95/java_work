@@ -12,17 +12,17 @@ public class Locker {
     public boolean isRented() {
         return pinCode != null;
     }
+    private static final Random random = new Random ();
 
     public Result rentLocker() {
         if (this.pinCode != null) {
             return new Result(false, "This locker is already taken.");
         }
 
-        Random random = new Random();
-        int generator = random.nextInt(10000); // gives a num. btw 0000 - 9999
+        int generator = random.nextInt(10000);
         this.pinCode = String.format("%04d", generator);
 
-        return new Result(true, "Locker rented successfully. Here's the pin code: ", this.pinCode);
+        return new Result(true, "Locker rented successfully.", String.valueOf(this.lockerNumber), this.pinCode);
     }
 
     //activate Getters
