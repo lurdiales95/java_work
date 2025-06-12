@@ -13,7 +13,6 @@ public class IO {
         input.nextLine(); // consume newline
         return numberOfLockers;
     }
-
     // Display menu and get user's choice
     public static int getMenuChoices() {
         System.out.println("\nWelcome to the locker rental system!");
@@ -35,7 +34,6 @@ public class IO {
         }
         return choice;
     }
-
     // Ask for locker number
     public static int getLockerNumber() {
         System.out.print("Enter locker number: ");
@@ -45,13 +43,11 @@ public class IO {
         }
         return input.nextInt();
     }
-
     // Ask for pin code
     public static String getPinCode() {
         System.out.print("Enter PIN code: ");
         return input.next();
     }
-
     // Display result message
     public static void displayResult(Result result) {
         System.out.println(result.getMessage());
@@ -66,29 +62,3 @@ public class IO {
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-    /* public static void displayResult(Result r) {
-        String [] selctions = {"Rent a locker", "Access a Locker", "Release a Locker"};
-
-
-        System.out.println(r.getMessage());
-
-        //pinCode
-        System.out.println("Your PIN code is: " + pinCode);
-
-
-        System.out.println();"Welcome to the locker rental system! Would you  like to rent or open a locker?"
-        // I need to provide the options 1. Rent a locker 2. Open a locker */
-
-//This should be printing things.
-//This  class needs to have the scanner in it.

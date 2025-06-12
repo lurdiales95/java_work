@@ -1,11 +1,10 @@
 public class Main {
     public static void main(String[] args) {
-        // Asks user how many lockers aare available
+        // Ask user how many lockers aare available
         int numberOfLockersAvailable = IO.askForNumberOfLockersAvailable();
 
         // Initiates the LockerService
         LockerService service = new LockerService(numberOfLockersAvailable);
-
 
         boolean running = true;
 
@@ -48,23 +47,3 @@ public class Main {
         }
     }
 }
-
-
-    /* RULES
-    1. You may only use the Scanner and System.out.println() in one class
-    2. Other classes must return strings, booleans, etc. so you know what to print
-    3. What classes should you have:
-        1. Locker
-        2. LockerService (rent, access, release)
-        3. IO|Utilities (printing scanner)
-        4. Main (app workflow)
-        5. Result
-
-
-     */
-
-//Main should:
-//Spit out locker service,
-//Configure array
-//Make sure everything is ready to run
-//Start a loop on main to display the menu. Ask IO class to display menu, get user choice, and display prompts.
