@@ -7,8 +7,8 @@ public class CallNextPartyCommand {
 
         } else {
             TerminalUtils.print(String.format("Calling %s, party of %d", calledParty.getName(), calledParty.getSize()));
-
         }
+
         TerminalUtils.pressToContinue();
 
     }

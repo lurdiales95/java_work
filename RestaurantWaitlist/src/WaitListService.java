@@ -4,7 +4,7 @@ public class WaitListService {
     private ArrayList<Party> waitList;
 
     public WaitListService() {
-        waitList = new ArrayList<>;
+        waitList = new ArrayList<>();
     }
 
     public void addParty(Party party) {
@@ -15,7 +15,7 @@ public class WaitListService {
         if (waitList.isEmpty()) {
             return null;
         }
-        Party nextParty = waitList.removeFirst();
+        Party nextParty = waitList.remove(0);
         return nextParty;
     }
 

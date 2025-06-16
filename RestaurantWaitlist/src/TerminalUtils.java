@@ -1,43 +1,43 @@
-import javax.print.attribute.standard.RequestingUserName;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class TerminalUtils {
     private static Scanner io = new Scanner(System.in);
 
-    public static void pressToContinue() {
-        System.out.println("\Press enter to continue...");
-        io.nextLine();
-
-    }
-
-
-    // Print a message to the console
+    //Print message to console
     public static void print(String msg) {
         System.out.println(msg);
+    }
 
+    public static void pressToContinue() {
+        System.out.println("\nPress enter to continue...");
+        io.nextLine();
     }
 
     // Create a new party by getting a name and size from the user
     public static Party createParty() {
-        String name = getPartyName();
-        int size = getPartySize();
-        return new Party(name, size);
-
+       String name = getPartyName();
+       int size = getPartySize();
+       return new Party(name, size);
     }
 
     // Get party name from user input
-    private static int getPartyName() {
-        System.out.print("Enter party name: ");
-        return io.nextLine();
-
+    private static String getPartyName() {
+        String name;
+        do {
+            System.out.print("Enter party name: ");
+            name = io.nextLine().trim();
+            if (name.isEmpty()) {
+                System.out.println("Party name cannot be empty. Please try again.");
+            }
+        } while (name.isEmpty());
+        return name;
     }
 
     // Get party size from user input
     private static int getPartySize() {
-        System.out.println("Enter party size: ");
-        int size = 0;
-        boolean validInput = false;
+       int size = 0;
+       boolean validInput = false;
 
         while (!validInput) {
             System.out.println("Enter party size: ");
@@ -45,12 +45,12 @@ public class TerminalUtils {
             try {
                 size = Integer.parseInt(io.nextLine());
                 if (size < 1) {
-                    System.out.println("Party size must be at lease 1. Please try again.");
+                    System.out.println("Party size must be at least 1. Please try again.");
                 } else {
                     validInput = true;
                 }
             } catch (NumberFormatException e) {
-                System.out.println("Please entera valid number.");
+                System.out.println("Please enter a valid number.");
             }
 
         }
@@ -61,14 +61,15 @@ public class TerminalUtils {
     // Print a list of parties
     public static void print(ArrayList<Party> list) {
         if (list.isEmpty()) {
-            System.out.println("No parties in the list.");
+            System.out.print("No parties in the list.");
             return;
 
         }
 
         System.out.println("Parties:");
         for (int i = 0; i < list.size(); i++) {
-            System.out.println((i + 1) + "." + party.getName() + " (Size: " + party.getSize() + ")");
+            Party party = list.get(i);
+            System.out.println((i + 1) + ". " + party.getName() + " (Size: " + party.getSize() + ")");
         }
     }
 
@@ -82,7 +83,7 @@ public class TerminalUtils {
 
         print(list);
         System.out.print("Select a party (1- " + list.size() + "): ");
-        io.
+
 
         while (!io.hasNextInt()) {
             System.out.println("Please enter a valid number (1-" + list.size() + "): ");
@@ -102,28 +103,19 @@ public class TerminalUtils {
     }
 
     private static void clearScreen() {
-        try {
-            String os = System.getProperty("os.name");
-            if (os.contains("Windows")) {
-                Runtime.getRuntime().exec("cls");
-            } else {
-                Runtime.getRuntime().exec("clear");
-            }
-        } catch (Exception e) {
-            // Handle exceptions
-        }
+        System.out.println("\033[2J\033[H");
+        System.out.flush();
     }
 
         // Get menu choice from user
         public static String getMenuChoice () {
-            String choice;
-            boolean validInput = false;
+           String choice;
 
             while (true) {
                 clearScreen();
 
                 System.out.println("\n--- RESTAURANT WAITLIST MENU ---");
-                System.out.println("1. View the Waitlist")
+                System.out.println("1. View the Waitlist");
                 System.out.println("2. Add a Party");
                 System.out.println("3. Remove a Party");
                 System.out.println("4. Call Next Party");
@@ -141,6 +133,5 @@ public class TerminalUtils {
             }
         }
     }
-}
 
 
