@@ -1,5 +1,6 @@
-public class GuessResult {
+public enum GuessResult {
     CORRECT,
     LOWER,
-    HIGHER
+    HIGHER,
+    DUPLICATE
 }

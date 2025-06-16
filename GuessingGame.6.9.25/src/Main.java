@@ -1,6 +1,5 @@
 public class Main {
     public static void main(String[] args) {
-        TerminalUtils utils = new TerminalUtils();
 
 
     do {
@@ -19,12 +18,15 @@ public class Main {
                     case LOWER:
                         TerminalUtils.print("Lower!");
                         break;
+
                     case HIGHER:
                         TerminalUtils.print("Higher!");
                         break;
+
                     case DUPLICATE:
                         TerminalUtils.print("You already guessed that number!");
                         break;
+
                     default:
                         TerminalUtils.print(String.format("You got it! It took you %d tries.", game.getTotalGuesses()));
                         keepPlaying = false;
@@ -35,7 +37,6 @@ public class Main {
             if (!TerminalUtils.getPlayAgain()) {
                 break;
             }
-
         } while(true);
     }
 }
