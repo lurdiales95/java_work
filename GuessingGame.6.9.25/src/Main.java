@@ -5,6 +5,7 @@ public class Main {
     do {
             int max = TerminalUtils.getMaxNumber();
             GuessService game = new GuessService(max);
+
             game.startGame();
             boolean keepPlaying = true;
 

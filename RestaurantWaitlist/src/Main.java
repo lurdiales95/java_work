@@ -1,6 +1,6 @@
 public class Main {
     public static void main(String[] args) {
-        WaitListService service = new WaitListService();
+        WaitListService service = new InMemoryWaitList();
 
         // application loop
         while(true) {
@@ -20,5 +20,9 @@ public class Main {
             }
         }
     }
+    private static WaitListService getWaitlistImplementation() {
+        return new InMemoryWaitList();
+    }
+
 }
 
