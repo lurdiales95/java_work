@@ -1,4 +1,4 @@
-package com.example;
+package com.shoppinginc;
 
 /**
  * Hello world!

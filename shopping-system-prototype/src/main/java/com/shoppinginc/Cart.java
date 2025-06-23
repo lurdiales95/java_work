@@ -1,4 +1,4 @@
-package com.example;
+package com.shoppinginc;
 
 import java.util.ArrayList;
 import java.util.List;
