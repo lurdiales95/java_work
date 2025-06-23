@@ -1,0 +1,4 @@
+Hello, World!
+Today is a good day for Java!
+Happy June!
+This will not have a carriage return |Number: 15
