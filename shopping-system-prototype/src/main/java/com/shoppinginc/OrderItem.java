@@ -1,8 +1,8 @@
 package com.shoppinginc;
 
 public class OrderItem {
-    int id;
-    int quantity;
+    String id;
+    String quantity;
 
     public OrderItem(int id, int quantity) {
         this.id = id;
