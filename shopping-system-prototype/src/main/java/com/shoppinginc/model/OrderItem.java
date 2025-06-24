@@ -17,7 +17,7 @@ public class OrderItem {
         return id;
     }
 
-    public void setId(String id) {  // Fixed: Added parameter
+    public void setId(String id) {
         this.id = id;
     }
 
