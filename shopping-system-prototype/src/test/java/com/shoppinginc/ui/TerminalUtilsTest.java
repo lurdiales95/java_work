@@ -52,8 +52,6 @@ public class TerminalUtilsTest {
         assertTrue(output.contains("Item added."));
     }
 
-
-
     @Test
     void testDisplayCart_WithItems() {
         OrderItem item = new OrderItem("A1", 2, "Laptop", 1000.00);
