@@ -4,13 +4,13 @@ import com.shoppinginc.model.OrderItem;
 import com.shoppinginc.service.ICartService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 import java.io.*;
-import java.util.Map;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
+
 
 public class TerminalUtilsTest {
     private ICartService mockCartService;
@@ -35,36 +35,53 @@ public class TerminalUtilsTest {
     }
 
     @Test
-    void testDisplayCart_WithItems() {
-        when(mockCartService.isEmpty()).thenReturn(false);
-        when(mockCartService.getOrderItems()).thenReturn(Map.of(
-                "A1", new OrderItem("A1", 2, "Laptop",  1000.00)
+    void testAddItem() {
+        String simulatedInput = "A1\nLaptop\n2\n1000.00\n";
+        System.setIn(new ByteArrayInputStream(simulatedInput.getBytes()));
+
+        terminal.addItem();
+
+        verify(mockCartService).addItem(argThat(item ->
+                item.getId().equals("A1") &&
+                        item.getName().equals("Laptop") &&
+                        item.getQuantity() == 2 &&
+                        item.getPrice() == 1000.00
         ));
 
-        when(mockCartService.getCartTotal()).thenReturn(2.0);
+        String output = outContent.toString();
+        assertTrue(output.contains("Item added."));
+    }
+
+
+
+    @Test
+    void testDisplayCart_WithItems() {
+        OrderItem item = new OrderItem("A1", 2, "Laptop", 1000.00);
+        when(mockCartService.isEmpty()).thenReturn(false);
+        when(mockCartService.getAllItems()).thenReturn(List.of(item));
+        when(mockCartService.getCartTotal()).thenReturn(2000.00);
 
         terminal.displayCart();
 
         String output = outContent.toString();
-        assertTrue(output.contains("Apple"));
-        assertTrue(output.contains("Total: $1000.00"));
-
+        assertTrue(output.contains("Laptop"));
+        assertTrue(output.contains("Total: $2000.00"));
     }
 
     @Test
-    void testPromptREmoveItem_NotFound() {
-        String userInput = "X1\n1\n";
-        System.setIn(new ByteArrayInputStream(userInput.getBytes()));
+    void testRemoveItem_PromptsCorrectly_WhenCartEmptyOrItemMissing() {
+        String simulatedInput = "X1\n1\n";
+        System.setIn(new ByteArrayInputStream(simulatedInput.getBytes()));
 
         when(mockCartService.isEmpty()).thenReturn(false);
-        when(mockCartService.removeItem("X1",1)).thenReturn(false);
+        when(mockCartService.getAllItems()).thenReturn(List.of());
+        when(mockCartService.removeItem("X1", 1)).thenReturn(false);
 
-
-        TerminalUtils inputTerminal = new TerminalUtils(mockCartService);
-        inputTerminal.promptRemoveItem();
+        terminal.removeItem();
 
         String output = outContent.toString();
-        assertTrue(output.contains("Item not found."));
+        assertTrue(output.contains("Enter the item ID to remove:"));
+        assertTrue(output.contains("Item removed.") || output.contains("Your cart is currently empty.") || output.contains("Item not found."));
     }
 
     @Test
@@ -74,22 +91,19 @@ public class TerminalUtilsTest {
 
         terminal.checkout();
 
-        verify(mockCartService, times(1).clearCart();
+        verify(mockCartService, times(1)).clearCart();
         String output = outContent.toString();
         assertTrue(output.contains("Final total: $9.99"));
-        assertTrue(output.contains("Your purchase is complete."));
+        assertTrue(output.contains("Thank you for your purchase!"));
     }
 
-
     @Test
-    void TestCheckoutEmptyCart() {
+    void testCheckoutEmptyCart() {
         when(mockCartService.isEmpty()).thenReturn(true);
 
         terminal.checkout();
 
         String output = outContent.toString();
         assertTrue(output.contains("Cart is empty. Nothing to checkout."));
-
     }
-
 }

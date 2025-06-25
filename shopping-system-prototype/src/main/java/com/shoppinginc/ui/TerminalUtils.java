@@ -1,14 +1,17 @@
 package com.shoppinginc.ui;
 
 import com.shoppinginc.model.OrderItem;
-import com.shoppinginc.service.CartService;
+import com.shoppinginc.service.ICartService;
 
 import java.util.Scanner;
 
 public class TerminalUtils {
-
     private final Scanner scanner = new Scanner(System.in);
-    private final CartService cartService = new CartService();
+    private final ICartService cartService;
+
+    public TerminalUtils(ICartService cartService) {
+        this.cartService = cartService;
+    }
 
     public void run() {
         boolean running = true;
@@ -44,7 +47,7 @@ public class TerminalUtils {
         System.out.print("Please select an option (1-5): ");
     }
 
-    private void displayCart() {
+    protected void displayCart() {
         System.out.println("\n--- CART ITEMS ---");
 
         if (cartService.isEmpty()) {
@@ -58,7 +61,7 @@ public class TerminalUtils {
         }
     }
 
-    private void addItem() {
+    protected void addItem() {
         System.out.print("Enter item ID: ");
         String id = scanner.nextLine().trim();
 
@@ -76,7 +79,7 @@ public class TerminalUtils {
         System.out.println("Item added.");
     }
 
-    private void removeItem() {
+    protected void removeItem() {
         displayCart();
 
         if (cartService.isEmpty()) return;
@@ -91,7 +94,7 @@ public class TerminalUtils {
         System.out.println("Item removed.");
     }
 
-    private void checkout() {
+    protected void checkout() {
         if (cartService.isEmpty()) {
             System.out.println("Cart is empty. Nothing to checkout.");
         } else {

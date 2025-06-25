@@ -1,80 +1,60 @@
 package com.shoppinginc.service;
 
 import com.shoppinginc.model.OrderItem;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class CartService implements ICartService {
-    private final Map<String, OrderItem> orderItems = new HashMap<>();
+    private final Map<String, OrderItem> cart = new HashMap<>();
+
+    @Override
+    public boolean isEmpty() {
+        return cart.isEmpty();
+    }
 
     @Override
     public void addItem(OrderItem item) {
-        if (item == null || item.getId() == null || item.getQuantity() <= 0) {
-            throw new IllegalArgumentException("Invalid item");
-        }
+        cart.merge(item.getId(), item, (existing, incoming) -> {
+            existing.setQuantity(existing.getQuantity() + incoming.getQuantity());
+            return existing;
+        });
+    }
 
-        if (orderItems.containsKey(item.getId())) {
-            OrderItem existingItem = orderItems.get(item.getId());
-            existingItem.setQuantity(existingItem.getQuantity() + item.getQuantity());
+    @Override
+    public boolean removeItem(String id, int qty) {
+        OrderItem existing = cart.get(id);
+        if (existing == null) return false;
+
+        if (qty >= existing.getQuantity()) {
+            cart.remove(id);
         } else {
-            orderItems.put(item.getId(), item);
+            existing.setQuantity(existing.getQuantity() - qty);
         }
+        return true;
     }
 
     @Override
-    public boolean removeItem(String itemId, int quantityToRemove) {
-        if (itemId == null || quantityToRemove <= 0) {
-            return false;
-        }
-
-        if (orderItems.containsKey(itemId)) {
-            OrderItem existingItem = orderItems.get(itemId);
-            int newQuantity = existingItem.getQuantity() - quantityToRemove;
-            if (newQuantity > 0) {
-                existingItem.setQuantity(newQuantity);
-            } else {
-                orderItems.remove(itemId);
-            }
-            return true;
-        }
-        return false;
-    }
-
-    @Override
-    public Map<String, OrderItem> getOrderItems() {
-        return new HashMap<>(orderItems);  // Fixed: Return copy to protect encapsulation
-    }
-
-    public Collection<OrderItem> getAllItems() {
-        return orderItems.values();
+    public List<OrderItem> getAllItems() {
+        return new ArrayList<>(cart.values());
     }
 
     @Override
     public double getCartTotal() {
-        double total = 0.0;
-        for (OrderItem item : orderItems.values()) {
-            total += item.getPrice() * item.getQuantity();
-        }
-        return total;
+        return cart.values().stream()
+                .mapToDouble(item -> item.getPrice() * item.getQuantity())
+                .sum();
     }
 
     @Override
     public void clearCart() {
-        orderItems.clear();
+        cart.clear();
+    }
+
+    public Map<String, OrderItem> getOrderItems() {
+        return cart;
     }
 
     @Override
-    public boolean isEmpty() {
-        return orderItems.isEmpty();
-    }
-
-    @Override
-    public int getTotalItemCount() {  // Fixed: Changed return type to int
-        int count = 0;
-        for (OrderItem item : orderItems.values()) {
-            count += item.getQuantity();
-        }
-        return count;
+    public int getTotalItemCount() {
+        return cart.values().stream().mapToInt(OrderItem::getQuantity).sum();
     }
 }

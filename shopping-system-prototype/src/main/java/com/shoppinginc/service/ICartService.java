@@ -1,14 +1,14 @@
 package com.shoppinginc.service;
 
 import com.shoppinginc.model.OrderItem;
-import java.util.Map;
+import java.util.List;
 
 public interface ICartService {
-    void addItem(OrderItem item);
-    boolean removeItem(String id, int quantityToRemove);
-    Map<String, OrderItem> getOrderItems();
-    void clearCart();
-    int getTotalItemCount();  // Fixed: Changed from String to int
     boolean isEmpty();
+    void addItem(OrderItem item);
+    boolean removeItem(String id, int qty);
+    List<OrderItem> getAllItems();
     double getCartTotal();
+    void clearCart();
+    int getTotalItemCount();
 }
