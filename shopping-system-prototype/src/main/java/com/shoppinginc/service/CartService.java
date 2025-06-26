@@ -3,6 +3,8 @@ package com.shoppinginc.service;
 import com.shoppinginc.model.OrderItem;
 import java.util.*;
 
+
+// CartService powers to add, remove, checkout, etc.
 public class CartService implements ICartService {
     // Map = way to store items using a String and OrderItem variable
     private final Map<String, OrderItem> cart = new HashMap<>();
