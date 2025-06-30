@@ -57,7 +57,7 @@ public class TerminalUtils {
     }
 
     // Shows user what items are in the cartService
-    protected void displayCart() {
+    public void displayCart() {
         System.out.println("\n--- CART ITEMS ---");
 
         // notifies when cartService does not have any items in it
@@ -76,7 +76,7 @@ public class TerminalUtils {
     }
 
     // allows the details of the items that will be added to the cart and adds them to the cartService.
-    protected void addItem() {
+    public void addItem() {
         System.out.print("Enter item ID: ");
         String id = scanner.nextLine().trim();
 
@@ -101,7 +101,7 @@ public class TerminalUtils {
 
     // allows user to remove item from cart. Asks what item to remove based on id and quantity.
     // name of item not necessary since the IDs should be unique to each item.
-    protected void removeItem() {
+    public void removeItem() {
         displayCart();
 
         if (cartService.isEmpty()) return;
@@ -117,7 +117,7 @@ public class TerminalUtils {
     }
 
     // activates checkout feature
-    protected void checkout() {
+    public void checkout() {
         if (cartService.isEmpty()) {
             // notifies if there's nothing in the cartService data
             System.out.println("Cart is empty. Nothing to checkout.");
@@ -134,7 +134,7 @@ public class TerminalUtils {
     }
 
     // usees the promptEnterKey to have "Enter" key be used to bring you back to the main menu after you've completed a task
-    private void promptEnterKey() {
+    public void promptEnterKey() {
         System.out.println("\nPress Enter to continue...");
         scanner.nextLine();
     }

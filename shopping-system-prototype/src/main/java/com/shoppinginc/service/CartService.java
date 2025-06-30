@@ -69,6 +69,6 @@ public class CartService implements ICartService {
     // Gives total number of items in the cart overall. (RL Exp: Under 15 items line).
     @Override
     public int getTotalItemCount() {
-        return cart.values().stream().mapToInt(OrderItem::getQuantity).sum();
+        return cart.values().stream().mapToInt(i -> i.getQuantity()).sum();
     }
 }

@@ -114,7 +114,7 @@ public class CartServiceTest {
     // tests to make sure there is no way to remove an item that doesn't exist
     void testRemoveNonexistentItemReturnsFalse() {
         // identifies id and qty that do not exist submitted by user
-        boolean result = cartService.removeItem("NOTFOUND", 1);
+        boolean result = cartService.removeItem("NOT FOUND", 1);
 
         // returns false to show that the item doesn't exist in the cart
         Assertions.assertFalse(result);
