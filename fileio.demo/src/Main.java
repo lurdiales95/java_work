@@ -1,12 +1,14 @@
+import javax.imageio.IIOException;
 import java.io.*;
 import java.util.Scanner;
 
 public class Main {
-//    public static void main(String[] args) {
-//        Scanner scanner = new Scanner(System.in);
+   public static void main(String[] args) {
+//       System.out.println("Working directory " + System.getProperty("user.dir"));
+//       File file = new File("data/input.txt");
+       Scanner scanner = new Scanner(System.in);
 
 //        //This allows us to print code directory. Works for debugging relative file paths.
-//        File file = new File("data/input.txt");
 //
 //
 //        // true if file exists
@@ -17,66 +19,73 @@ public class Main {
 //        System.out.println(file.isDirectory());
 //        // prints file length in bytes
 //        System.out.println(file.length());
-//    }
-//}
-
-        static {
-            System.out.println("Working directory " + System.getProperty("user.dir"));
-        }
-
-        public static void main(String [] args) {
-            // Print working directory (already done in static block)
-
-            // Create a new file
-            File file2 = new File("data/poem.txt");
-
-            try {
-                boolean created = file2.createNewFile();
-                System.out.println("File created: " + created);
-
-                // Create a Scanner only if file exists
-                if (file2.exists()) {
-                    Scanner scanner = new Scanner(file2);
-                    if (scanner.hasNextLine()) {
-                        System.out.println("First line: " + scanner.nextLine());
-                    }
-                    scanner.close();
-                }
-
-                // Delete the file
-                boolean deleted = file2.delete();
-                System.out.println("File deleted: " + deleted);
-
-            } catch (IOException e) {
-                System.out.println("Couldn't create or read the file!");
-                e.printStackTrace();
-            }
-        }
-    }
-
-
-
-        // Write to file
 //
-//
-//        }
-
+//        File file2 = new File("data/poem.txt");
 //        try {
-//            PrintWriter writer = new PrintWriter("data/output.txt");
-//            writer.println("Hello, World!");
-//            writer.println("Today is a good day for Java!");
-//            writer.println("Happy June!");
-//            writer.print("This will not have a carriage return |");
-//            writer.printf("Number: %d%n", 15);
-//
-//            writer.close();
+//            boolean created = file2.createNewFile();
+//        } catch (IIOException e) {
+//            System.out.println("Couldn't create a new file!");
 //        } catch (IOException e) {
-//            System.out.println(e);
+//            throw new RuntimeException(e);
+//        }
+//
+
+
+//        }
+
+//        public static void main(String [] args) {
+//            // Print working directory (already done in static block)
+//
+//            // Create a new file
+//            File file2 = new File("data/poem.txt");
+//
+//            try {
+//                boolean created = file2.createNewFile();
+//                System.out.println("File created: " + created);
+//
+//                // Create a Scanner only if file exists
+//                if (file2.exists()) {
+//                    Scanner scanner = new Scanner(file2);
+//                    if (scanner.hasNextLine()) {
+//                        System.out.println("First line: " + scanner.nextLine());
+//                    }
+//                    scanner.close();
+//                }
+//
+//                // Delete the file
+//                boolean deleted = file2.delete();
+//                System.out.println("File deleted: " + deleted);
+//
+//            } catch (IOException e) {
+//                System.out.println("Couldn't create or read the file!");
+//                e.printStackTrace();
+//            }
 //        }
 //    }
+
+
+       // Write to file
+//
+//
+//        }
+//
+//       try {
+//           PrintWriter writer = new PrintWriter("data/output.txt");
+//           writer.println("Hello, World!");
+//           writer.println("Today is a good day for Java!");
+//           writer.println("Happy June!");
+//           writer.print("This will not have a carriage return |");
+//           writer.printf("Number: %d%n", 15);
+//
+//           writer.close();
+//       } catch (IOException e) {
+//           System.out.println(e);
+//       }
+//   }
+//
 //}
 
-
+//
 //        try {
 //            FileReader reader = new FileReader("data/output.txt");
 //            int charCode;
@@ -91,16 +100,16 @@ public class Main {
 //        }
 //    }
 //}
-//        // Java's long way of doing 'with'
-//        try (BufferedReader reader = new BufferedReader(new FileReader("data/output.txt"))) {
-//            String line;
-//            while ((line = reader.readLine()) != null) {
-//                System.out.println(line);
-//            }
-//        } catch (IOException e) {
-//            System.out.println("Error reading the file: " + e.getMessage());
-//        }
-//    }
-//}
+        // Java's long way of doing 'with'
+        try (BufferedReader reader = new BufferedReader(new FileReader("data/output.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                System.out.println(line);
+            }
+        } catch (IOException e) {
+            System.out.println("Error reading the file: " + e.getMessage());
+        }
+    }
+}
 
 
