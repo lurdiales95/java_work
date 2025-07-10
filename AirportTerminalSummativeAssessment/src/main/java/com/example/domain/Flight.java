@@ -2,6 +2,7 @@ package com.example.domain;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Objects;
 
 public class Flight {
     private String flightNumber;
@@ -16,7 +17,6 @@ public class Flight {
         this.aircraft = aircraft;
 
     }
-
     public String getFlightNumber() {
         return flightNumber;
     }
@@ -32,7 +32,30 @@ public class Flight {
     public Aircraft getAircraft() {
         return aircraft;
     }
+
+    @Override
+    public boolean equals(Object otherFlight) {
+        if (this == otherFlight) return true;
+        if (otherFlight == null || getClass() != otherFlight.getClass()) return false;
+        Flight flight = (Flight) otherFlight;
+        return Objects.equals(flightNumber, flight.flightNumber) && Objects.equals(departureDate, flight.departureDate);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(flightNumber, departureDate);
+    }
+
+    @Override
+    public String toString() {
+        return "Flight{" +
+                "flightNumber='" + flightNumber + '\'' +
+                ", departureDate=" + departureDate +
+                '}';
+    }
 }
+
+
 
 
 /* Attributes: flightNumber, departureDate (LocalDate), ticketPrice (BigDecimal),

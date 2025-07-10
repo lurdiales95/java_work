@@ -16,5 +16,13 @@ public class Passenger {
     public String getPassportNumber() {
         return passportNumber;
     }
+
+    @Override
+    public String toString() {
+        return "Passenger{" +
+                "name='" + name + '\'' +
+                ", passportNumber='" + passportNumber + '\'' +
+                '}';
+    }
 }
 
