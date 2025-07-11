@@ -4,26 +4,58 @@ import com.example.ReservationSystem;
 import com.example.domain.*;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Scanner;
 
 public class CSVUtil {
-    private HashMap<String, ArrayList<Passenger>> reservations;
 
-    public CSVUtil(HashMap<String, ArrayList<Passenger>> reservations) {
-        this.reservations = reservations;
-    }
+    public static HashMap<String, ArrayList<Passenger>> loadReservationsFromCSV(String filename) {
+        HashMap<String, ArrayList<Passenger>> reservations = new HashMap<>();
 
-    public static void loadReservationsFromCSV(String filename) {
+        try {
 
+            Scanner scanner = new Scanner(new File(filename));
+
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+
+                String[] parts = line.split(",");
+
+                String flightNumber = parts[0];
+                String passengerName = parts[3];
+                String passportNumber = parts[4];
+
+
+                Passenger passenger = new Passenger(passengerName, passportNumber);
+
+                if (reservations.containsKey(flightNumber)) {
+                    reservations.get(flightNumber).add(passenger);
+
+                } else {
+
+                    ArrayList<Passenger> passengerList = new ArrayList<>();
+                    passengerList.add(passenger);
+                    reservations.put(flightNumber, passengerList);
+                }
+            }
+
+            scanner.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return reservations;
 
     }
 
     public static void saveReservationsToCSV(String filename, ReservationSystem reservationSystem, ArrayList<Flight> flights) {
+
         try {
             FileWriter writer = new FileWriter(filename);
 
@@ -70,4 +102,5 @@ public class CSVUtil {
             e.printStackTrace();
         }
     }
+
 }
