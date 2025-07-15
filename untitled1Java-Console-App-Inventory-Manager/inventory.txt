@@ -1,0 +1,15 @@
+5905,Japanese Cherry Blossom Candle,150,26.95
+4535,Fresh Cut Lilacs Candle,150,10.99
+6757,Sweater Weather Candle,150,26.95
+3568,Eucalyptus Mint Candle,150,26.95
+7737,Honeycrisp Apple,150,26.95
+6760,Raspberry Mimosa,150,26.95
+3564,Midnight Blue Citrus,150,26.95
+6413,Campfire Cocoa,150,26.95
+7735,Pumpkin Pecan Waffles,150,26.95
+6421,Pumpkin Cinnamon Bun,150,26.95
+7778,Praline Delight,150,24.95
+8256,Vampire Blood,150,39.95
+6939,Candy Apple Cauldron,150,39.95
+8249,I Scream Float,150,26.95
+8247,Ghoul Friend,150,26.95

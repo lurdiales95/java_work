@@ -16,18 +16,23 @@ public class InventoryService {
     }
 
     public void displayInventory() {
-
         System.out.println("===== Inventory List =====");
-        System.out.println("ID | Name | Quantity | Price");
-        System.out.println("-----------------------------------------");
+
+        // top border
+        System.out.println("+------+--------------------------------+----------+---------+");
+
+        // header row
+        System.out.println("| ID   | Product Name                   | Quantity | Price   |");
+
+        // header seperator
+        System.out.println("+------+--------------------------------+----------+---------+");
 
         for (Product product : inventory) {
             System.out.println(product);
-
         }
 
-        System.out.println("-----------------------------------------\n" +
-                "Press Enter to return to the main menu...");
+        System.out.println("+------+--------------------------------+----------+---------+");
+        System.out.println("Press Enter to return to the Main Menu...");
     }
 
     public Product searchProduct(String searchTerm) {
@@ -83,11 +88,21 @@ public class InventoryService {
                 Product product = new Product(productID, productName, quantity, price);
                 inventory.add(product);
             }
-
             scanner.close();
             return true;
-
         } catch (Exception e) {
+            return false;
+
+        }
+    }
+
+    public boolean updateProduct(String productID, int quantity, double price) {
+        Product productToUpdate = searchProduct(productID);
+        if (productToUpdate != null) {
+            productToUpdate.setQuantity(quantity);
+            productToUpdate.setPrice(price);
+            return true;
+        } else {
             return false;
         }
     }

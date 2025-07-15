@@ -41,11 +41,11 @@ public class Product {
             this.price = price;
         }
     }
+
+    @Override
     public String toString() {
-        return "Product ID: " + productID + " | Product Name: " + productName +
-                " | Quantity: " + quantity + " | Price: $" + price;
-
-
+        return String.format("| %-4s | %-30s | %-8d | $%-6.2f |",
+                productID, productName, quantity, price);
     }
 }
 

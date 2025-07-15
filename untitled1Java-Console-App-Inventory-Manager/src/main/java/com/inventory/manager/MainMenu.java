@@ -4,32 +4,30 @@ import com.inventory.manager.model.Product;
 import com.inventory.manager.service.InventoryService;
 
 import java.util.Scanner;
-import java.util.SortedMap;
 
 public class MainMenu {
     private InventoryService inventoryService = new InventoryService();
 
-    private MainMenu() {
-        public void showMainMenu() {
-            System.out.println("===== Inventory Manager =====");
-            System.out.println("1. Add Product");
-            System.out.println("2. View Products");
-            System.out.println("3. Search Product");
-            System.out.println("4. Update Product");
-            System.out.println("5. Delete Product");
-            System.out.println("6. Save Inventory to File");
-            System.out.println("7. Load Inventory from File");
-            System.out.println("8. Exit");
-            System.out.print("Enter your choice: ");
-        }
-
-
-
-
+    // Constructor - loads existing inventory
+    public MainMenu() {
         inventoryService.loadInventory();
     }
 
-    public static void main( String[] args ) {
+
+    public void showMainMenu() {
+        System.out.println("===== Inventory Manager =====");
+        System.out.println("1. Add Product");
+        System.out.println("2. View Products");
+        System.out.println("3. Search Product");
+        System.out.println("4. Update Product");
+        System.out.println("5. Delete Product");
+        System.out.println("6. Save Inventory to File");
+        System.out.println("7. Load Inventory from File");
+        System.out.println("8. Exit");
+        System.out.print("Enter your choice: ");
+    }
+
+    public static void main(String[] args) {
         MainMenu menu = new MainMenu();
         Scanner scanner = new Scanner(System.in);
         int choice;
@@ -52,8 +50,6 @@ public class MainMenu {
 
                     menu.inventoryService.addProduct(productID, productName, quantity, price);
                     System.out.println("Product added successfully!");
-
-
                     break;
 
                 case 2:
@@ -69,7 +65,7 @@ public class MainMenu {
 
                     if (foundProduct != null) {
                         System.out.println("Product Found:");
-                        System.out.println(foundProduct);  // Uses our toString() method!
+                        System.out.println(foundProduct);
                     } else {
                         System.out.println("Product not found!");
                     }
@@ -81,11 +77,11 @@ public class MainMenu {
                     String updateID = scanner.next();
                     System.out.print("Enter New Quantity: ");
                     int newQuantity = scanner.nextInt();
-                    System.out.print("Enter new price: ");
+                    System.out.print("Enter New Price: ");
                     double newPrice = scanner.nextDouble();
 
                     if (menu.inventoryService.updateProduct(updateID, newQuantity, newPrice)) {
-                        System.out.println("Product updated succesfully!");
+                        System.out.println("Product updated successfully!");
                     } else {
                         System.out.println("Product not found!");
                     }
@@ -114,15 +110,15 @@ public class MainMenu {
                 case 7:
                     if (menu.inventoryService.loadInventory()) {
                         System.out.println("Inventory successfully loaded from inventory.txt");
-
-                    } else  {
+                    } else {
                         System.out.println("Error loading inventory (file may not exist)!");
-
                     }
                     break;
+
                 case 8:
                     System.out.println("Goodbye!");
                     break;
+
                 default:
                     System.out.println("Invalid choice! Please try again.");
                     break;
@@ -130,11 +126,6 @@ public class MainMenu {
 
         } while (choice != 8);
 
-
-
-
-    }
-
-    private void showMainMenu() {
+        scanner.close();
     }
 }
