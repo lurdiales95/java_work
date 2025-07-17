@@ -39,10 +39,32 @@ public class InventoryService {
         for (Product product : inventory) {
             if (searchTerm.equals(product.getProductID()) || searchTerm.equals(product.getProductName())) {
                 return product;
-
             }
         }
         return null;
+    }
+
+    // NEW SMART SEARCH METHOD - Combines exact and keyword search
+    public ArrayList<Product> smartSearch(String searchTerm) {
+        ArrayList<Product> results = new ArrayList<>();
+
+        // First: Try exact match (ID or full name - case insensitive for names)
+        for (Product product : inventory) {
+            if (searchTerm.equals(product.getProductID()) ||
+                    searchTerm.equalsIgnoreCase(product.getProductName())) {
+                results.add(product);
+                return results; // Return immediately if exact match found
+            }
+        }
+
+        // Second: Try keyword search if no exact match found
+        for (Product product : inventory) {
+            if (product.getProductName().toLowerCase().contains(searchTerm.toLowerCase())) {
+                results.add(product);
+            }
+        }
+
+        return results; // Returns empty list if nothing found
 
     }
 
@@ -51,7 +73,6 @@ public class InventoryService {
         if (productToRemove != null) {
             inventory.remove(productToRemove);
             return true;
-
         } else {
             return false;
         }
@@ -63,10 +84,8 @@ public class InventoryService {
             for (Product product : inventory) {
                 writer.println(product.getProductID() + "," + product.getProductName() + "," + product.getQuantity() + "," + product.getPrice());
             }
-
             writer.close();
             return true;
-
         } catch (Exception e) {
             return false;
         }
@@ -86,18 +105,17 @@ public class InventoryService {
                 double price = Double.parseDouble(parts[3]);
 
                 Product product = new Product(productID, productName, quantity, price);
-                inventory.add(product);
+                inventory.add(product); // method should say inventory = repository.getAll() - return all list of products
             }
             scanner.close();
             return true;
         } catch (Exception e) {
             return false;
-
         }
     }
 
     public boolean updateProduct(String productID, int quantity, double price) {
-        Product productToUpdate = searchProduct(productID);
+        Product productToUpdate = searchProduct(productID);  // Now this will work!
         if (productToUpdate != null) {
             productToUpdate.setQuantity(quantity);
             productToUpdate.setPrice(price);

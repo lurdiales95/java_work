@@ -2,7 +2,7 @@
 4535,Fresh Cut Lilacs Candle,150,10.99
 6757,Sweater Weather Candle,150,26.95
 3568,Eucalyptus Mint Candle,150,26.95
-7737,Honeycrisp Apple,150,26.95
+7737,Honeycrisp Apple,148,16.95
 6760,Raspberry Mimosa,150,26.95
 3564,Midnight Blue Citrus,150,26.95
 6413,Campfire Cocoa,150,26.95
