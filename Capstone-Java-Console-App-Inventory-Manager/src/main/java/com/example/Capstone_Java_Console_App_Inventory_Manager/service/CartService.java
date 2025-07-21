@@ -54,7 +54,7 @@ public class CartService {
 
         }
 
-        return new Result<>() (true,
+        return new Result<>()(true,
                 String.format("Added %d candles of '%s' to cart", quantity, item.getCandle().productName()), null);
     }
 
@@ -64,7 +64,7 @@ public class CartService {
         }
         if (quantity <= 0) {
             return new Result<>(false, "Quantity must be greater than 0", null);
-    }
+        }
 
         if (!cart.containsKey(productID)) {
             return new Result<>(false, "Item not in cart", null);
@@ -111,7 +111,7 @@ public class CartService {
             CartItem cartItem = entry.getValue();
             int purchasedQuantity = cartItem.getQuantity();
 
-            InventoryItem item = inventoryRepository.getByProductID();
+            InventoryCandleItem item = inventoryRepository.getByProductID();
             item.setQuantity(item.getQuantity() - purchasedQuantity);
             inventoryRepository.update(item);
         }

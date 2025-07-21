@@ -40,8 +40,6 @@ public class CsvInventoryRepository implements InventoryRepository {
         }
         inventory.put(item.getCandle().productID(), item);
         saveToFile();
-
-
     }
 
     @Override
@@ -116,10 +114,10 @@ public class CsvInventoryRepository implements InventoryRepository {
             for (InventoryCandleItem item: inventory.values()) {
                 Candle candle = item.getCandle();
                 writer.printf("%s,%s,%d,%.2f%n"),
-                candle.productID(),
-                candle.productName(),
-                item.getQuantity(),
-                item.getPrice());
+                    candle.productID(),
+                    candle.productName(),
+                    item.getQuantity(),
+                    item.getPrice());
             }
 
         } catch (IOException e) {
