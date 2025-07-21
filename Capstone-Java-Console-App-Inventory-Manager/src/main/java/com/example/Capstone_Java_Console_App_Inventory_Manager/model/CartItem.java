@@ -9,7 +9,7 @@ public class CartItem {
     private final BigDecimal price;
     private BigDecimal extendedPrice;
 
-    public CartItem(Candle candle, BigDecimal price, int quantity, BigDecimal extendedPrice) {
+    public CartItem(Candle candle, int quantity, BigDecimal price) {
         this.candle = candle;
         this.price = price;
         this.quantity = quantity;
@@ -26,7 +26,7 @@ public class CartItem {
 
     public void setQuantity(int quantity) {
         if (quantity < 0) {
-            throw new IllegalArgumentException("The quantity of candles cannot be negative.");
+            throw new IllegalArgumentException("Quantity cannot be negative");
         }
         this.quantity = quantity;
         this.extendedPrice = this.price.multiply(BigDecimal.valueOf(quantity)).setScale(2, RoundingMode.HALF_UP);
@@ -40,12 +40,9 @@ public class CartItem {
         return extendedPrice;
     }
 
-    public void setExtendedPrice(BigDecimal extendedPrice) {
-        this.extendedPrice = extendedPrice;
-    }
-
     @Override
     public String toString() {
-        return String.format("%s - Qty %d - Price: $%s - Extended: $%s", candle.toString(), quantity, price, extendedPrice);
+        return String.format("%s - Qty: %d - Price: $%s - Extended: $%s",
+                candle.toString(), quantity, price, extendedPrice);
     }
 }

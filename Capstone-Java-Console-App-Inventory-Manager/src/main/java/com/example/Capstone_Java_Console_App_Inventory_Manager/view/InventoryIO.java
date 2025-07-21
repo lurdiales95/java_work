@@ -1,10 +1,8 @@
 package com.example.Capstone_Java_Console_App_Inventory_Manager.view;
 
-
 import com.example.Capstone_Java_Console_App_Inventory_Manager.model.InventoryCandleItem;
 import org.springframework.stereotype.Component;
 
-import javax.swing.plaf.PanelUI;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Scanner;
@@ -31,7 +29,6 @@ public class InventoryIO {
         System.out.println("Thank you for using Inventory Management!");
         System.out.println("Have a great day!");
         System.out.println();
-
     }
 
     public int displayMenuAndGetChoice() {
@@ -49,15 +46,14 @@ public class InventoryIO {
 
     public void displaySectionHeader(String productName) {
         System.out.println();
-        System.out.println(("=== " + productName.toUpperCase() + " ===");
+        System.out.println("=== " + productName.toUpperCase() + " ===");
     }
 
-    public void displaySuccess(String message) { System.out.println(("✓ " + message); }
+    public void displaySuccess(String message) {System.out.println("✓ " + message); }
 
     public  void displayError(String message) {System.out.println("✗ ERROR: " + message); }
 
-    public void displayInfo(String message) {
-        System.out.println("ℹ " + message); }
+    public void displayInfo(String message) {System.out.println("ℹ " + message); }
 
     public void displayInventoryItems(List<InventoryCandleItem> items)  {
         System.out.println("═══════════════════════════════════════════════════════════════════════════");
@@ -71,7 +67,7 @@ public class InventoryIO {
         }
 
         // Header
-        System.out.printf("%-18s %-20s %-15s %-12s %3s %12s%n", "PRODUCT ID}", "CANDLE", "QTY", "PRICE");
+        System.out.printf("%-18s %-20s %-15s %-12s %3s %12s%n", "PRODUCT ID", "CANDLE", "QTY", "PRICE");
         System.out.println("───────────────────────────────────────────────────────────────────────────");
 
         for (InventoryCandleItem item : items) {
@@ -105,46 +101,87 @@ public class InventoryIO {
     }
 
     public String getStringInput(String prompt) {
-        System.out.println(prompt);
-        String innput = scanner.nextLine();
+        System.out.print(prompt);
+        String input = scanner.nextLine().trim();
 
-        if (innput.isEmpty()) {
+        if (input.isEmpty()) {
+            displayError("Input cannot be empty. Please try again.");
+            return getStringInput(prompt);
+        }
+
+        return input;
+    }
+
+    public Integer getIntegerInput(String prompt) {
+        System.out.print(prompt);
+        String input = scanner.nextLine().trim();
+
+        if (input.isEmpty()) {
             displayError("Input cannot be empty. Please try again.");
             return getIntegerInput(prompt);
         }
 
         try {
-            int value = Integer.parseInt(innput);
+            int value = Integer.parseInt(input);
             if (value <= 0) {
                 displayError("Please enter a positive number.");
                 return getIntegerInput(prompt);
-
             }
             return value;
         } catch (NumberFormatException e) {
             displayError("Please enter a valid number.");
             return getIntegerInput(prompt);
         }
-
-        try {
-            int value = Integer.parseInt(innput);
-            if (value <= 0) {
-                displayError("Please enter a positive number.");
-                return getIntegerInput(prompt);
-            }
-
-
-        }
-
-
-
-
     }
 
+    public BigDecimal getBigDecimalInput(String prompt) {
+        System.out.print(prompt);
+        String input = scanner.nextLine().trim();
 
+        if (input.isEmpty()) {
+            displayError("Input cannot be empty. Please try again.");
+            return getBigDecimalInput(prompt);
+        }
 
+        try {
+            BigDecimal value = new BigDecimal(input);
+            if (value.compareTo(BigDecimal.ZERO) <= 0) {
+                displayError("Please enter a positive price.");
+                return getBigDecimalInput(prompt);
+            }
+            return value;
+        } catch (NumberFormatException e) {
+            displayError("Please enter a valid price (e.g., 19.99).");
+            return getBigDecimalInput(prompt);
+        }
+    }
+    private int getIntegerInputWithDefault(String prompt, int defaultValue) {
+        System.out.print(prompt);
+        String input = scanner.nextLine().trim();
 
+        if (input.isEmpty()) {
+            return defaultValue;
+        }
 
+        try {
+            return Integer.parseInt(input);
+        } catch (NumberFormatException e) {
+            displayError("Please enter a valid number.");
+            return getIntegerInputWithDefault(prompt, defaultValue);
+        }
+    }
 
+    public boolean getConfirmation(String prompt) {
+        System.out.print(prompt);
+        String input = scanner.nextLine().trim().toLowerCase();
 
+        while (!input.equals("y") && !input.equals("n") &&
+                !input.equals("yes") && !input.equals("no")) {
+            displayError("Please enter 'y' for yes or 'n' for no.");
+            System.out.print(prompt);
+            input = scanner.nextLine().trim().toLowerCase();
+        }
+
+        return input.equals("y") || input.equals("yes");
+    }
 }

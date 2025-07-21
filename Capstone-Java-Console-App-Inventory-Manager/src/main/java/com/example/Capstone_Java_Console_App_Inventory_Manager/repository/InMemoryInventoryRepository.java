@@ -36,7 +36,7 @@ public class InMemoryInventoryRepository implements InventoryRepository {
 
     private void addSampleCandle(String productID, String productName, int quantity, String price) {
         Candle candle = new Candle(productID, productName);
-        InventoryCandleItem item = new InventoryCandleItem(productName, quantity, new BigDecimal(price));
+        InventoryCandleItem item = new InventoryCandleItem(candle, quantity, new BigDecimal(price));
         inventory.put(productID, item);
     }
 

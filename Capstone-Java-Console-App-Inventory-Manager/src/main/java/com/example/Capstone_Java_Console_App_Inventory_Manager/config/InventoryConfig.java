@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class InventoryConfig {
 
-    @Value("${candleinventory.respository.type:memory}")
+    @Value("${candleinventory.repository.type:memory}")
     private String repositoryType;
 
     @Bean
