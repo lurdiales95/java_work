@@ -1,5 +1,7 @@
 package com.example.bookstore;
 
+package com.example.bookstore;
+
 import com.example.bookstore.model.*;
 import com.example.bookstore.repository.*;
 import com.example.bookstore.service.*;

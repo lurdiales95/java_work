@@ -19,38 +19,34 @@ public class Inventory {
     public Inventory(InventoryService inventoryService, InventoryIO inventoryIO) {
         this.inventoryService = inventoryService;
         this.inventoryIO = inventoryIO;
-
     }
 
     public void run() {
         inventoryIO.displayWelcome();
-
         boolean running = true;
+
         while (running) {
-            int choice = inventoryIO.displayMenuAndGetChoice();
+            inventoryIO.showMenu();
+            String choice = inventoryIO.getMenuChoice();
 
+            // menu selections based on numerical String
             switch (choice) {
-                case 1:
-                    handleAddOrUpdateItem();
-                    break;
+                case "1" -> handleAddOrUpdateItem();
+                case "2" -> handleRemoveItem();
+                case "3" -> handleViewItem();
+                case "4" -> handleViewAllItems();
+                case "5" -> running = false;
+                default -> inventoryIO.displayError("Invalid choice. Please try again.");
+            }
 
-                case 2:
-                    handleRemoveItem();
-                    break;
-                case 3:
-                    handleViewItem();
-                    break;
-                case 4:
-                    handleViewAllItems();
-                    break;
-                case 5:
-                    running = false;
-                    inventoryIO.displayGoodbye();
-                    break;
-                default:
-                    inventoryIO.displayError("Invalid choice. Please try again.");
+            // command to signal that the user wants app to stop running the loop using choice 5
+            if (!choice.equals("5")) {
+                inventoryIO.promptEnterKey();
             }
         }
+
+        // response to closing the loop
+        inventoryIO.displayGoodbye();
     }
 
     private void handleAddOrUpdateItem() {
@@ -78,7 +74,7 @@ public class Inventory {
             // Create a new Candle record with all 4 parameters
             Candle candle = new Candle(productID, productName, scentType, seasonAvailability);
 
-            // Create a new InventoryCandleItem with the candle (not productName!)
+            // Create a new InventoryCandleItem
             InventoryCandleItem item = new InventoryCandleItem(candle, quantity, price);
 
             // Check if item already exists
@@ -97,7 +93,7 @@ public class Inventory {
     }
 
     private void handleRemoveItem() {
-        inventoryIO.displaySectionHeader("Remove inventory item");
+        inventoryIO.displaySectionHeader("Remove Inventory Item");
 
         List<InventoryCandleItem> allItems = inventoryService.getAllItems();
         if (allItems.isEmpty()) {
@@ -105,6 +101,7 @@ public class Inventory {
             return;
         }
 
+        // Show current inventory
         inventoryIO.displayInventoryItems(allItems);
 
         String productID = inventoryIO.getStringInput("Enter ProductID to remove: ");
@@ -116,6 +113,7 @@ public class Inventory {
             return;
         }
 
+        // Show the item that will be removed
         inventoryIO.displaySectionHeader("Item to Remove");
         inventoryIO.displaySingleItem(existingItem);
 
@@ -132,7 +130,6 @@ public class Inventory {
             inventoryIO.displayError("Failed to remove item: " + e.getMessage());
         }
     }
-
 
     private void handleViewItem() {
         inventoryIO.displaySectionHeader("View Inventory Item");

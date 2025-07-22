@@ -19,38 +19,34 @@ public class Kiosk {
     public Kiosk(CartService cartService, KioskIO kioskIO) {
         this.cartService = cartService;
         this.kioskIO = kioskIO;
-
-
     }
 
     public void run() {
         kioskIO.displayWelcome();
-
         boolean running = true;
-        while (running) {
-            int choice = kioskIO.displayMenuAndGetChoice();
 
+        while (running) {
+            kioskIO.showMenu();
+            String choice = kioskIO.getMenuChoice();
+
+            // menu selections based on numerical String
             switch (choice) {
-                case 1:
-                    handleAddToCart();
-                    break;
-                case 2:
-                    handleRemoveFromCart();
-                    break;
-                case 3:
-                    handleDisplayCart();
-                    break;
-                case 4:
-                    handleCheckout();
-                    break;
-                case 5:
-                    running = false;
-                    kioskIO.displayGoodbye();
-                    break;
-                default:
-                    kioskIO.displayError("Invalid choice. Please try again.");
+                case "1" -> handleAddToCart();
+                case "2" -> handleRemoveFromCart();
+                case "3" -> handleDisplayCart();
+                case "4" -> handleCheckout();
+                case "5" -> running = false;
+                default -> kioskIO.displayError("Invalid choice. Please try again.");
+            }
+
+            // command to signal that the user wants app to stop running the loop using choice 5
+            if (!choice.equals("5")) {
+                kioskIO.promptEnterKey();
             }
         }
+
+        // response to closing the loop
+        kioskIO.displayGoodbye();
     }
 
     private void handleAddToCart() {
@@ -92,7 +88,6 @@ public class Kiosk {
             kioskIO.displaySuccess(result.getMessage());
         } else {
             kioskIO.displayError(result.getMessage());
-
         }
     }
 
@@ -139,12 +134,3 @@ public class Kiosk {
         }
     }
 }
-
-
-
-
-
-
-
-
-

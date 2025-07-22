@@ -9,7 +9,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class CapstoneJavaConsoleAppInventoryManagerApplication implements CommandLineRunner {
+public class InventoryManagerApp implements CommandLineRunner {
 
 	@Autowired
 	private Kiosk kiosk;
@@ -21,7 +21,7 @@ public class CapstoneJavaConsoleAppInventoryManagerApplication implements Comman
 	private String mode;
 
 	public static void main(String[] args) {
-		SpringApplication.run(CapstoneJavaConsoleAppInventoryManagerApplication.class, args);
+		SpringApplication.run(InventoryManagerApp.class, args);
 	}
 
 	@Override

@@ -1,12 +1,9 @@
+
 package com.example.Capstone_Java_Console_App_Inventory_Manager;
 
-import com.example.Capstone_Java_Console_App_Inventory_Manager.model.Candle;
-import com.example.Capstone_Java_Console_App_Inventory_Manager.model.CartItem;
-import com.example.Capstone_Java_Console_App_Inventory_Manager.model.InventoryCandleItem;
-import com.example.Capstone_Java_Console_App_Inventory_Manager.model.Result;
-import com.example.Capstone_Java_Console_App_Inventory_Manager.repository.InMemoryInventoryRepository;
-import com.example.Capstone_Java_Console_App_Inventory_Manager.repository.InventoryRepository;
-import com.example.Capstone_Java_Console_App_Inventory_Manager.service.CartService;
+import com.example.Capstone_Java_Console_App_Inventory_Manager.model.*;
+import com.example.Capstone_Java_Console_App_Inventory_Manager.repository.*;
+import com.example.Capstone_Java_Console_App_Inventory_Manager.service.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -14,20 +11,16 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class CartServiceTest {
+public class CartServiceTests {
     private InventoryRepository inventoryRepository;
     private CartService cartService;
 
+    // Test data
     private Candle candle1;
     private Candle candle2;
-    private InventoryCandleItem inventoryCandleItem1;
-    private InventoryCandleItem inventoryCandleItem2;
+    private InventoryCandleItem inventoryItem1;
+    private InventoryCandleItem inventoryItem2;
 
     @BeforeEach
     void setUp() {
@@ -35,14 +28,20 @@ class CartServiceTest {
         inventoryRepository = new InMemoryInventoryRepository();
         cartService = new CartService(inventoryRepository);
 
-        candle1= new Candle("8264", "Fall Farmhouse", "Warm & Woodsy", "Fall");
-        candle2 = new Candle("3559", "Mahogany Teakwood Intense", "Warm & Woodsy", "Year Round");
+        candle1 = new Candle("5905", "Japanese Cherry Blossom", "Botanical & Blooms", "Year Round");
+        candle2 = new Candle("6757", "Sweater Weather", "Fresh & Clean", "Winter");
 
-        inventoryCandleItem1 = new InventoryCandleItem(candle1, 150, new BigDecimal("26.95"));
-        inventoryCandleItem2 = new InventoryCandleItem(candle2, 150, new BigDecimal("13.98"));
+        // Create test inventory items
+        inventoryItem1 = new InventoryCandleItem(candle1, 3, new BigDecimal("26.95"));
+        inventoryItem2 = new InventoryCandleItem(candle2, 2, new BigDecimal("24.99"));
+
+        // Add items to inventory
+        inventoryRepository.add(inventoryItem1);
+        inventoryRepository.add(inventoryItem2);
 
     }
 
+    // Helper method to find CartItem by ProductID
     private CartItem findCartItemByProductID(List<CartItem> cartItems, String productID) {
         return cartItems.stream()
                 .filter(item -> item.getCandle().productID().equals(productID))
@@ -59,15 +58,16 @@ class CartServiceTest {
     @Test
     void addToCart_ValidItem_ReturnsSuccess() {
         // Act
-        Result<Void> result = cartService.addToCart("8264", 2);
+        Result<Void> result = cartService.addToCart("5905", 2);
+
         System.out.println(result.isSuccess());
         // Assert
         assertTrue(result.isSuccess());
-        assertEquals("Added 2 candles of 'Fall Farmhouse' scent to cart", result.getMessage());
+        assertEquals("Added 2 candles of 'Japanese Cherry Blossom' scent to cart", result.getMessage());
 
         // Verify cart contents
         List<CartItem> cartContents = cartService.getCartContents();
-        assertEquals(2, getQuantityByProductID(cartContents, "8264"));
+        assertEquals(2, getQuantityByProductID(cartContents, "5905"));
         assertFalse(cartService.isEmpty());
     }
 
@@ -107,7 +107,7 @@ class CartServiceTest {
     @Test
     void addToCart_ZeroQuantity_ReturnsFailure() {
         // Act
-        Result<Void> result = cartService.addToCart("3559", 0);
+        Result<Void> result = cartService.addToCart("5905", 0);
 
         // Assert
         assertFalse(result.isSuccess());
@@ -118,7 +118,7 @@ class CartServiceTest {
     @Test
     void addToCart_NegativeQuantity_ReturnsFailure() {
         // Act
-        Result<Void> result = cartService.addToCart("3559", -1);
+        Result<Void> result = cartService.addToCart("5905", -1);
 
         // Assert
         assertFalse(result.isSuccess());
@@ -129,7 +129,7 @@ class CartServiceTest {
     @Test
     void addToCart_BookNotFound_ReturnsFailure() {
         // Act
-        Result<Void> result = cartService.addToCart("invalid-productID", 1);
+        Result<Void> result = cartService.addToCart("invalid-id", 1);
 
         // Assert
         assertFalse(result.isSuccess());
@@ -140,7 +140,7 @@ class CartServiceTest {
     @Test
     void addToCart_InsufficientStock_ReturnsFailure() {
         // Act - trying to add more than available (10 in stock)
-        Result<Void> result = cartService.addToCart("3559", 15);
+        Result<Void> result = cartService.addToCart("5905", 15);
 
         // Assert
         assertFalse(result.isSuccess());
@@ -151,36 +151,38 @@ class CartServiceTest {
     @Test
     void addToCart_ExactStockQuantity_ReturnsSuccess() {
         // Act - adding exactly what's in stock
-        Result<Void> result = cartService.addToCart("3559", 10);
+        Result<Void> result = cartService.addToCart("5905", 10);
 
         // Assert
         assertTrue(result.isSuccess());
-        assertEquals("Added 10 copies of 'Clean Code' to cart", result.getMessage());
+        assertEquals("Added 10 copies of 'Japanese Cherry Blossom' to cart' to cart", result.getMessage());
 
         List<CartItem> cartContents = cartService.getCartContents();
-        assertEquals(10, getQuantityByProductID(cartContents, "3559"));
+        assertEquals(10, getQuantityByProductID(cartContents, "5905"));
     }
 
     @Test
     void addToCart_MultipleAdds_AccumulatesQuantity() {
         // Act
-        Result<Void> result1 = cartService.addToCart("3559", 3);
-        Result<Void> result2 = cartService.addToCart("3559", 2);
+        Result<Void> result1 = cartService.addToCart("5905", 3);
+        Result<Void> result2 = cartService.addToCart("5905", 2);
 
         // Assert
         assertTrue(result1.isSuccess());
         assertTrue(result2.isSuccess());
-        assertEquals("Added 2 copies of 'Clean Code' to cart", result2.getMessage());
+
+
+        assertEquals("Added 2 candles of 'Japanese Cherry Blossom' to cart", result2.getMessage());
 
         List<CartItem> cartContents = cartService.getCartContents();
-        assertEquals(5, getQuantityByProductID(cartContents, "3559"));
+        assertEquals(5, getQuantityByProductID(cartContents, "5905"));
     }
 
     @Test
     void addToCart_AccumulatedQuantityExceedsStock_ReturnsFailure() {
         // Act
-        Result<Void> result1 = cartService.addToCart("3559", 8);
-        Result<Void> result2 = cartService.addToCart("3559", 5);
+        Result<Void> result1 = cartService.addToCart("5905", 8);
+        Result<Void> result2 = cartService.addToCart("5905", 5);
 
         // Assert
         assertTrue(result1.isSuccess());
@@ -189,79 +191,79 @@ class CartServiceTest {
 
         // Verify cart still contains the first addition only
         List<CartItem> cartContents = cartService.getCartContents();
-        assertEquals(8, getQuantityByProductID(cartContents, "978-0132350884"));
+        assertEquals(8, getQuantityByProductID(cartContents, "5905"));
     }
 
     @Test
     void addToCart_MultipleDifferentBooks_ReturnsSuccess() {
         // Act
-        Result<Void> result1 = cartService.addToCart("978-0132350884", 2);
-        Result<Void> result2 = cartService.addToCart("978-0321125217", 1);
+        Result<Void> result1 = cartService.addToCart("5905", 2);
+        Result<Void> result2 = cartService.addToCart("6757", 1);
 
         // Assert
         assertTrue(result1.isSuccess());
         assertTrue(result2.isSuccess());
 
         List<CartItem> cartContents = cartService.getCartContents();
-        assertEquals(2, getQuantityByIsbn(cartContents, "978-0132350884"));
-        assertEquals(1, getQuantityByIsbn(cartContents, "978-0321125217"));
+        assertEquals(2, getQuantityByProductID(cartContents, "5905"));
+        assertEquals(1, getQuantityByProductID(cartContents, "6757"));
         assertEquals(2, cartContents.size());
     }
 
     @Test
     void removeFromCart_ValidRemoval_ReturnsSuccess() {
         // Arrange
-        cartService.addToCart("978-0132350884", 5);
+        cartService.addToCart("5905", 5);
 
         // Act
-        Result<Void> result = cartService.removeFromCart("978-0132350884", 2);
+        Result<Void> result = cartService.removeFromCart("5905", 2);
 
         // Assert
         assertTrue(result.isSuccess());
-        assertEquals("Removed 2 copies of 'Clean Code' from cart", result.getMessage());
+        assertEquals("Removed 2 copies of 'Japanese Cherry Blossom' from cart' from cart", result.getMessage());
 
         List<CartItem> cartContents = cartService.getCartContents();
-        assertEquals(3, getQuantityByIsbn(cartContents, "978-0132350884"));
+        assertEquals(3, getQuantityByProductID(cartContents, "5905"));
     }
 
     @Test
     void removeFromCart_RemoveAll_ClearsItem() {
         // Arrange
-        cartService.addToCart("978-0132350884", 3);
+        cartService.addToCart("5905", 3);
 
         // Act
-        Result<Void> result = cartService.removeFromCart("978-0132350884", 3);
+        Result<Void> result = cartService.removeFromCart("5905", 3);
 
         // Assert
         assertTrue(result.isSuccess());
-        assertEquals("Removed all copies of 'Clean Code' from cart", result.getMessage());
+        assertEquals("Removed all copies of 'Japanese Cherry Blossom' from cart' from cart", result.getMessage());
 
         List<CartItem> cartContents = cartService.getCartContents();
-        assertNull(findCartItemByProductID(cartContents, "978-0132350884"));
+        assertNull(findCartItemByProductID(cartContents, "5905"));
         assertTrue(cartService.isEmpty());
     }
 
     @Test
     void removeFromCart_RemoveMoreThanExists_ClearsItem() {
         // Arrange
-        cartService.addToCart("978-0132350884", 2);
+        cartService.addToCart("5905", 2);
 
         // Act
-        Result<Void> result = cartService.removeFromCart("978-0132350884", 5);
+        Result<Void> result = cartService.removeFromCart("5905", 5);
 
         // Assert
         assertTrue(result.isSuccess());
         assertEquals("Removed all copies of 'Clean Code' from cart", result.getMessage());
 
         List<CartItem> cartContents = cartService.getCartContents();
-        assertNull(findCartItemByProductID(cartContents, "978-0132350884"));
+        assertNull(findCartItemByProductID(cartContents, "5905"));
         assertTrue(cartService.isEmpty());
     }
 
     @Test
     void removeFromCart_ItemNotInCart_ReturnsFailure() {
         // Act
-        Result<Void> result = cartService.removeFromCart("978-0132350884", 1);
+        Result<Void> result = cartService.removeFromCart("5905 ", 1);
 
         // Assert
         assertFalse(result.isSuccess());
@@ -269,29 +271,29 @@ class CartServiceTest {
     }
 
     @Test
-    void removeFromCart_NullIsbn_ReturnsFailure() {
+    void removeFromCart_NullProductID_ReturnsFailure() {
         // Act
         Result<Void> result = cartService.removeFromCart(null, 1);
 
         // Assert
         assertFalse(result.isSuccess());
-        assertEquals("ISBN cannot be null or empty", result.getMessage());
+        assertEquals("ProductID cannot be null or empty", result.getMessage());
     }
 
     @Test
-    void removeFromCart_EmptyIsbn_ReturnsFailure() {
+    void removeFromCart_EmptyProductID_ReturnsFailure() {
         // Act
         Result<Void> result = cartService.removeFromCart("", 1);
 
         // Assert
         assertFalse(result.isSuccess());
-        assertEquals("ISBN cannot be null or empty", result.getMessage());
+        assertEquals("ProductID cannot be null or empty", result.getMessage());
     }
 
     @Test
     void removeFromCart_InvalidQuantity_ReturnsFailure() {
         // Act
-        Result<Void> result = cartService.removeFromCart("978-0132350884", 0);
+        Result<Void> result = cartService.removeFromCart("5905", 0);
 
         // Assert
         assertFalse(result.isSuccess());
@@ -312,7 +314,7 @@ class CartServiceTest {
     @Test
     void getTotalPrice_SingleItem_ReturnsCorrectTotal() {
         // Arrange
-        cartService.addToCart("978-0132350884", 2);
+        cartService.addToCart("5905", 2);
 
         // Act
         Result<BigDecimal> result = cartService.getTotalPrice();
@@ -320,33 +322,34 @@ class CartServiceTest {
         // Assert
         assertTrue(result.isSuccess());
         assertEquals("Total calculated successfully", result.getMessage());
-        assertEquals(new BigDecimal("59.98"), result.getData()); // 2 * 29.99
+        assertEquals(new BigDecimal("59.90"), result.getData()); // 2 * 26.95
     }
 
     @Test
     void getTotalPrice_MultipleItems_ReturnsCorrectTotal() {
         // Arrange
-        cartService.addToCart("978-0132350884", 2); // 2 * 29.99 = 59.98
-        cartService.addToCart("978-0321125217", 1); // 1 * 45.50 = 45.50
-
+        cartService.addToCart("5905", 2); // 2 * 26.95 = 53.90
+        cartService.addToCart("6757", 1); // 1 * 24.99 = 24.99
         // Act
         Result<BigDecimal> result = cartService.getTotalPrice();
 
         // Assert
         assertTrue(result.isSuccess());
         assertEquals("Total calculated successfully", result.getMessage());
-        assertEquals(new BigDecimal("105.48"), result.getData()); // 59.98 + 45.50
+        assertEquals(new BigDecimal("78.89"), result.getData()); // 53.90 + 24.99
     }
 
-    @Test
-    void getTotalPrice_InvalidItemInCart_ReturnsFailure() {
-        // This test may need to be updated based on how the CartService handles invalid items
-        // For now, commenting out as the current implementation doesn't check inventory in getTotalPrice
-        // The test would need to be redesigned based on actual behavior
-
-        // Note: The current CartService implementation doesn't validate items in getTotalPrice
-        // This test would need to be updated based on actual requirements
-    }
+//    @Test
+//    void getTotalPrice_InvalidItemInCart_ReturnsFailure() {
+//        cartService.addToCart("5905", 2); // 2 * 26.95 = 53.90
+//        cartService.addToCart("6757", 1); // 1 * 24.99 = 24.99
+//
+//        Result<BigDecimal> result = cartService.getTotalPrice();
+//        assertTrue(result.isFailure());
+//        assertEquals("Total calculated successfully"), result.getMessage();
+//        assertEquals(BigDecimal(77.77), result.getData());
+//
+//    }
 
     @Test
     void checkout_EmptyCart_ReturnsFailure() {
@@ -362,38 +365,37 @@ class CartServiceTest {
     @Test
     void checkout_ValidCart_ReturnsSuccessAndUpdatesInventory() {
         // Arrange
-        cartService.addToCart("8264", 2);
-        cartService.addToCart("3559", 1);
+        cartService.addToCart("5905", 2);
+        cartService.addToCart("6757", 1);
 
         // Act
         Result<String> result = cartService.checkout();
 
         // Assert
         assertTrue(result.isSuccess());
-        assertEquals("Checkout successful! Total: $105.48", result.getMessage());
-        assertEquals("$105.48", result.getData());
+        assertEquals("Checkout successful! Total: $78.89", result.getMessage());
+        assertEquals("$78.89", result.getData());
 
         // Verify cart is empty after checkout
         assertTrue(cartService.isEmpty());
 
         // Verify inventory was updated
-        InventoryCandleItem item1 = inventoryRepository.getByProductID("8264");
-        InventoryCandleItem item2 = inventoryRepository.getByProductID("3559");
+        InventoryCandleItem item1 = inventoryRepository.getByProductID("5905");
+        InventoryCandleItem item2 = inventoryRepository.getByProductID("6757");
         assertEquals(2, item1.getQuantity()); // 10 - 2
         assertEquals(1, item2.getQuantity()); // 5 - 1
 
         // equal hashcode method to add inside the models. Tests to see if one object equals another.
     }
 
-    @Test
-    void checkout_InvalidItemInCart_ReturnsFailure() {
-        // This test may need to be updated based on the actual implementation
-        // The current CartService doesn't validate items during checkout in the same way
-        // Commenting out for now, but this should be redesigned based on requirements
-
-        // Note: The current implementation may not handle this scenario the same way
-        // This test would need to be updated based on actual error handling requirements
-    }
+//    @Test
+//    void checkout_InvalidItemInCart_ReturnsFailure() {
+//        // This test may need to be updated based on the actual implementation
+//        // This CartService doesn't validate items during checkout in the same way
+//        // Should be redesigned based on requirements
+//        // Note:This implementation may not handle this scenario the same way
+//        // This test would need to be updated based on actual error handling requirements
+//    }
 
     @Test
     void getCartContents_EmptyCart_ReturnsEmptyList() {
@@ -408,8 +410,8 @@ class CartServiceTest {
     @Test
     void getCartContents_WithItems_ReturnsCorrectContents() {
         // Arrange
-        cartService.addToCart("8264", 2);
-        cartService.addToCart("3559", 3);
+        cartService.addToCart("5905", 2);
+        cartService.addToCart("6757", 3);
 
         // Act
         List<CartItem> contents = cartService.getCartContents();
@@ -417,14 +419,14 @@ class CartServiceTest {
         // Assert
         assertNotNull(contents);
         assertEquals(2, contents.size());
-        assertEquals(2, getQuantityByIsbn(contents, "8264"));
-        assertEquals(3, getQuantityByIsbn(contents, "978-0321125217"));
+        assertEquals(2, getQuantityByProductID(contents, "5905"));
+        assertEquals(3, getQuantityByProductID(contents, "6757"));
     }
 
     @Test
     void getCartContents_ReturnsDefensiveCopy() {
         // Arrange
-        cartService.addToCart("8264", 2);
+        cartService.addToCart("5905", 2);
 
         // Act
         List<CartItem> contents = cartService.getCartContents();
@@ -433,7 +435,7 @@ class CartServiceTest {
         // Assert - Original cart should not be affected
         List<CartItem> actualContents = cartService.getCartContents();
         assertEquals(1, actualContents.size());
-        assertEquals(2, getQuantityByIsbn(actualContents, "8264"));
+        assertEquals(2, getQuantityByProductID(actualContents, "5905"));
     }
 
     @Test
@@ -445,7 +447,7 @@ class CartServiceTest {
     @Test
     void isEmpty_NonEmptyCart_ReturnsFalse() {
         // Arrange
-        cartService.addToCart("978-0132350884", 1);
+        cartService.addToCart("5905", 1);
 
         // Act & Assert
         assertFalse(cartService.isEmpty());
@@ -454,8 +456,8 @@ class CartServiceTest {
     @Test
     void isEmpty_AfterRemovingAllItems_ReturnsTrue() {
         // Arrange
-        cartService.addToCart("8264", 2);
-        cartService.removeFromCart("978-0132350884", 2);
+        cartService.addToCart("5905", 2);
+        cartService.removeFromCart("5905", 2);
 
         // Act & Assert
         assertTrue(cartService.isEmpty());
@@ -464,15 +466,15 @@ class CartServiceTest {
     @Test
     void complexWorkflow_AddRemoveCheckout_WorksCorrectly() {
         // Arrange & Act - Complex workflow
-        cartService.addToCart("8264", 5);
-        cartService.addToCart("8264", 2);
-        cartService.removeFromCart("978-0132350884", 2);
-        cartService.addToCart("978-0132350884", 1);
+        cartService.addToCart("5905", 5);
+        cartService.addToCart("6757", 2);
+        cartService.removeFromCart("5905", 2);
+        cartService.addToCart("5905", 1);
 
         // Assert intermediate state
         List<CartItem> contents = cartService.getCartContents();
-        assertEquals(4, getQuantityByIsbn(contents, "8264")); // 5 - 2 + 1
-        assertEquals(2, getQuantityByIsbn(contents, "978-0321125217"));
+        assertEquals(4, getQuantityByProductID(contents, "5905")); // 5 - 2 + 1
+        assertEquals(2, getQuantityByProductID(contents, "6757"));
 
         // Act - checkout
         Result<String> checkoutResult = cartService.checkout();
@@ -482,9 +484,55 @@ class CartServiceTest {
         assertTrue(cartService.isEmpty());
 
         // Verify inventory updates
-        InventoryCandleItem item1 = inventoryRepository.getByProductID("8264");
-        InventoryCandleItem item2 = inventoryRepository.getByProductID("978-0321125217");
+        InventoryCandleItem item1 = inventoryRepository.getByProductID("5905");
+        InventoryCandleItem item2 = inventoryRepository.getByProductID("6757");
         assertEquals(6, item1.getQuantity()); // 10 - 4
         assertEquals(3, item2.getQuantity()); // 5 - 2
+    }
+
+    @Test
+    void addToCart_DifferentScentTypes_WorksCorrectly() {
+        Candle floralCandle = new Candle("1001", "Rose Petals", "Botanical && Blooms", "Spring");
+        Candle fruitCandle = new Candle("1002", "Orange Citrus", "Fruity & Bringt", "Summer");
+
+        InventoryCandleItem floralItem = new InventoryCandleItem(floralCandle, 15, new BigDecimal("22.50"));
+        InventoryCandleItem fruitItem = new InventoryCandleItem(fruitCandle, 8, new BigDecimal("28.75"));
+
+        inventoryRepository.add(floralItem);
+        inventoryRepository.add(fruitItem);
+
+        Result<Void> result1 = cartService.addToCart("1001", 3);
+        Result<Void> result2 = cartService.addToCart("1002", 2);
+
+        assertTrue(result1.isSuccess());
+        assertTrue(result2.isSuccess());
+
+        List<CartItem> contents = cartService.getCartContents();
+        assertEquals(4, contents.size());
+        assertEquals(3, getQuantityByProductID(contents, "1001"));
+        assertEquals(2, getQuantityByProductID(contents, "1002"));
+
+    }
+
+    void addToCart_SeasonalCandles_WorksCorrectly() {
+
+        Candle winterCandle = new Candle("2001", "Winter Wonderland", "Fresh & Clean", "Winter");
+        Candle yearRoundCandle = new Candle("2002", "Vanilla Dream", "Treats & Sweets", "Year Round");
+
+        InventoryCandleItem winterItem = new InventoryCandleItem(winterCandle, 20, new BigDecimal("31.99"));
+        InventoryCandleItem yearRoundItem = new InventoryCandleItem(yearRoundCandle, 25, new BigDecimal("19.99"));
+
+        inventoryRepository.add(winterItem);
+        inventoryRepository.add(yearRoundItem);
+
+        Result<Void> result1 =cartService.addToCart("2001", 2);
+        Result<Void> result2 = cartService.addToCart("2002", 4);
+
+        assertTrue(result1.isSuccess());
+        assertTrue(result2.isSuccess());
+
+        List<CartItem> contents = cartService.getCartContents();
+        assertEquals(2, getQuantityByProductID(contents, "2001"));
+        assertEquals(4, getQuantityByProductID(contents, "2002"));
     }
 }

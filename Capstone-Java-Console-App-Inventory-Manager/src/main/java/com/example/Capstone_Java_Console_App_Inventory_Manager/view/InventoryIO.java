@@ -12,16 +12,15 @@ public class InventoryIO {
 
     private final Scanner scanner;
 
-    public InventoryIO() {this.scanner = new Scanner(System.in); }
+    public InventoryIO() {
+        this.scanner = new Scanner(System.in);
+    }
 
     public void displayWelcome() {
-
         System.out.println("=======================================");
         System.out.println("    Welcome to Inventory Management!");
         System.out.println("=======================================");
         System.out.println();
-
-
     }
 
     public void displayGoodbye() {
@@ -31,7 +30,8 @@ public class InventoryIO {
         System.out.println();
     }
 
-    public int displayMenuAndGetChoice() {
+    // NEW METHOD: Show menu without getting input
+    public void showMenu() {
         System.out.println();
         System.out.println("=== INVENTORY MANAGEMENT MENU ===");
         System.out.println("1. Add/Update inventory item");
@@ -40,20 +40,39 @@ public class InventoryIO {
         System.out.println("4. View all inventory items");
         System.out.println("5. Quit");
         System.out.println();
-
-        return getIntegerInputWithDefault("Please select an option (1-5): ", -1);
+        System.out.print("Please select an option (1-5): ");
     }
+
+    // NEW METHOD: Get menu choice as String
+    public String getMenuChoice() {
+        return scanner.nextLine().trim();
+    }
+
+    // NEW METHOD: Pause for user to press Enter
+    public void promptEnterKey() {
+        System.out.println();
+        System.out.println("Press Enter to continue...");
+        scanner.nextLine();
+    }
+
+    // REMOVE OR REPLACE the old displayMenuAndGetChoice() method since we split it
 
     public void displaySectionHeader(String title) {
         System.out.println();
         System.out.println("=== " + title.toUpperCase() + " ===");
     }
 
-    public void displaySuccess(String message) {System.out.println("✓ " + message); }
+    public void displaySuccess(String message) {
+        System.out.println("✓ " + message);
+    }
 
-    public  void displayError(String message) {System.out.println("✗ ERROR: " + message); }
+    public void displayError(String message) {
+        System.out.println("✗ ERROR: " + message);
+    }
 
-    public void displayInfo(String message) {System.out.println("ℹ " + message); }
+    public void displayInfo(String message) {
+        System.out.println("ℹ " + message);
+    }
 
     public void displayInventoryItems(List<InventoryCandleItem> items) {
         System.out.println("═══════════════════════════════════════════════════════════════════════════");
@@ -162,21 +181,6 @@ public class InventoryIO {
         } catch (NumberFormatException e) {
             displayError("Please enter a valid price (e.g., 19.99).");
             return getBigDecimalInput(prompt);
-        }
-    }
-    private int getIntegerInputWithDefault(String prompt, int defaultValue) {
-        System.out.print(prompt);
-        String input = scanner.nextLine().trim();
-
-        if (input.isEmpty()) {
-            return defaultValue;
-        }
-
-        try {
-            return Integer.parseInt(input);
-        } catch (NumberFormatException e) {
-            displayError("Please enter a valid number.");
-            return getIntegerInputWithDefault(prompt, defaultValue);
         }
     }
 

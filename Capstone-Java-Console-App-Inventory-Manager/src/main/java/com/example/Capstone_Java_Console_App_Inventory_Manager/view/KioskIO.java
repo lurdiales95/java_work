@@ -3,7 +3,6 @@ package com.example.Capstone_Java_Console_App_Inventory_Manager.view;
 import com.example.Capstone_Java_Console_App_Inventory_Manager.model.CartItem;
 import org.springframework.stereotype.Component;
 
-
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Scanner;
@@ -31,7 +30,8 @@ public class KioskIO {
         System.out.println();
     }
 
-    public int displayMenuAndGetChoice() {
+    // NEW METHOD: Show menu without getting input
+    public void showMenu() {
         System.out.println();
         System.out.println("=== MAIN MENU ===");
         System.out.println("1. Add candle to cart");
@@ -40,9 +40,22 @@ public class KioskIO {
         System.out.println("4. Checkout");
         System.out.println("5. Quit");
         System.out.println();
-
-        return getIntegerInputWithDefault("Please select an option (1-5): ", -1);
+        System.out.print("Please select an option (1-5): ");
     }
+
+    // NEW METHOD: Get menu choice as String
+    public String getMenuChoice() {
+        return scanner.nextLine().trim();
+    }
+
+    // NEW METHOD: Pause for user to press Enter
+    public void promptEnterKey() {
+        System.out.println();
+        System.out.println("Press Enter to continue...");
+        scanner.nextLine();
+    }
+
+    // REMOVE OR REPLACE the old displayMenuAndGetChoice() method since we split it into showMenu() and getMenuChoice()
 
     public void displaySectionHeader(String title) {
         System.out.println();
@@ -52,6 +65,7 @@ public class KioskIO {
     public void displaySuccess(String message) {
         System.out.println("✓ " + message);
     }
+
     public void displayError(String message) {
         System.out.println("✗ ERROR: " + message);
     }
@@ -81,7 +95,7 @@ public class KioskIO {
             int quantity = item.getQuantity();
             BigDecimal extendedPrice = item.getExtendedPrice();
 
-
+            // Truncate product name if too long to fit in the display
             if (productName.length() > 35) {
                 productName = productName.substring(0, 32) + "...";
             }
@@ -91,7 +105,7 @@ public class KioskIO {
         }
     }
 
-    public String getStringInput (String prompt) {
+    public String getStringInput(String prompt) {
         System.out.print(prompt);
         String input = scanner.nextLine().trim();
 
@@ -103,7 +117,7 @@ public class KioskIO {
         return input;
     }
 
-    public Integer getIntegerInput (String prompt) {
+    public Integer getIntegerInput(String prompt) {
         System.out.print(prompt);
         String input = scanner.nextLine().trim();
 
@@ -124,23 +138,8 @@ public class KioskIO {
             return getIntegerInput(prompt);
         }
     }
-    private int getIntegerInputWithDefault(String prompt, int defaultValue) {
-        System.out.print(prompt);
-        String input = scanner.nextLine().trim();
 
-        if (input.isEmpty()) {
-            return defaultValue;
-        }
-
-        try {
-            return Integer.parseInt(input);
-        } catch (NumberFormatException e) {
-            displayError("Please enter a valid number.");
-            return getIntegerInputWithDefault(prompt, defaultValue);
-        }
-    }
-
-    public boolean getConfirmation (String prompt) {
+    public boolean getConfirmation(String prompt) {
         System.out.print(prompt);
         String input = scanner.nextLine().trim().toLowerCase();
 

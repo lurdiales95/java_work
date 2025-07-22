@@ -19,7 +19,7 @@ public class AirportTerminalApp {
         Flight flight1 = new Flight("A25", LocalDate.now(), BigDecimal.valueOf(1000), aircraft);
         Flight flight2 = new Flight("A3353", LocalDate.now(), BigDecimal.valueOf(2000), aircraft);
         Passenger Robert = new Passenger("Robert Par", "GTO2343253435");
-        Passenger Violet = new Passenger("Violet Ledger", "GF233w534543");
+        Passenger Violet = new Passenger("Violet Ledger", "GF2338534543");
 
         reservationSystem.addReservation(flight1.getFlightNumber(), Robert);
         reservationSystem.addReservation(flight1.getFlightNumber(), Violet);
