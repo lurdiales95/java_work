@@ -44,9 +44,9 @@ public class InventoryIO {
         return getIntegerInputWithDefault("Please select an option (1-5): ", -1);
     }
 
-    public void displaySectionHeader(String productName) {
+    public void displaySectionHeader(String title) {
         System.out.println();
-        System.out.println("=== " + productName.toUpperCase() + " ===");
+        System.out.println("=== " + title.toUpperCase() + " ===");
     }
 
     public void displaySuccess(String message) {System.out.println("✓ " + message); }
@@ -55,7 +55,7 @@ public class InventoryIO {
 
     public void displayInfo(String message) {System.out.println("ℹ " + message); }
 
-    public void displayInventoryItems(List<InventoryCandleItem> items)  {
+    public void displayInventoryItems(List<InventoryCandleItem> items) {
         System.out.println("═══════════════════════════════════════════════════════════════════════════");
         System.out.println("                              INVENTORY ITEMS");
         System.out.println("═══════════════════════════════════════════════════════════════════════════");
@@ -67,23 +67,30 @@ public class InventoryIO {
         }
 
         // Header
-        System.out.printf("%-18s %-20s %-15s %-12s %3s %12s%n", "PRODUCT ID", "CANDLE", "QTY", "PRICE");
+        System.out.printf("%-12s %-20s %-15s %-12s %3s %8s%n", "PRODUCT ID", "CANDLE", "SCENT TYPE", "SEASON", "QTY", "PRICE");
         System.out.println("───────────────────────────────────────────────────────────────────────────");
 
         for (InventoryCandleItem item : items) {
             String productID = item.getCandle().productID();
             String productName = item.getCandle().productName();
+            String scentType = item.getCandle().scentType();
+            String seasonAvailability = item.getCandle().seasonAvailability();
             int quantity = item.getQuantity();
             BigDecimal price = item.getPrice();
 
-            // Truncate title if too long to fit in the display
+            // Truncate fields if too long to fit in the display
             if (productName.length() > 20) {
                 productName = productName.substring(0, 17) + "...";
             }
+            if (scentType.length() > 15) {
+                scentType = scentType.substring(0, 12) + "...";
+            }
+            if (seasonAvailability.length() > 12) {
+                seasonAvailability = seasonAvailability.substring(0, 9) + "...";
+            }
 
-
-            System.out.printf("%-18s %-20s %-15s %-12s %3d       $%6.2f%n",
-                    productID, productName, quantity, price);
+            System.out.printf("%-12s %-20s %-15s %-12s %3d    $%6.2f%n",
+                    productID, productName, scentType, seasonAvailability, quantity, price);
         }
 
         System.out.println("═══════════════════════════════════════════════════════════════════════════");
@@ -93,10 +100,12 @@ public class InventoryIO {
         System.out.println("═══════════════════════════════════════════════════════════════════════════");
         System.out.println("                              ITEM DETAILS");
         System.out.println("═══════════════════════════════════════════════════════════════════════════");
-        System.out.printf("ISBN:     %s%n", item.getCandle().productID());
-        System.out.printf("Title:    %s%n", item.getCandle().productName());
-        System.out.printf("Quantity: %d%n", item.getQuantity());
-        System.out.printf("Price:    $%.2f%n", item.getPrice());
+        System.out.printf("Product ID:    %s%n", item.getCandle().productID());
+        System.out.printf("Candle Name:   %s%n", item.getCandle().productName());
+        System.out.printf("Scent Type:    %s%n", item.getCandle().scentType());
+        System.out.printf("Season:        %s%n", item.getCandle().seasonAvailability());
+        System.out.printf("Quantity:      %d%n", item.getQuantity());
+        System.out.printf("Price:         $%.2f%n", item.getPrice());
         System.out.println("═══════════════════════════════════════════════════════════════════════════");
     }
 

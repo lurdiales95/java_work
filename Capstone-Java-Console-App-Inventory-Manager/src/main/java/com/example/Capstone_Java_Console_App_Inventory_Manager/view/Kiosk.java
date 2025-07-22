@@ -1,6 +1,5 @@
 package com.example.Capstone_Java_Console_App_Inventory_Manager.view;
 
-
 import com.example.Capstone_Java_Console_App_Inventory_Manager.model.CartItem;
 import com.example.Capstone_Java_Console_App_Inventory_Manager.model.Result;
 import com.example.Capstone_Java_Console_App_Inventory_Manager.service.CartService;
@@ -8,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
-import java.util.BitSet;
 import java.util.List;
 
 @Component
@@ -19,14 +17,14 @@ public class Kiosk {
 
     @Autowired
     public Kiosk(CartService cartService, KioskIO kioskIO) {
-        this.cartService;
-        this.kioskIO;
+        this.cartService = cartService;
+        this.kioskIO = kioskIO;
 
 
     }
 
     public void run() {
-        kioskIO.displayWelcome;
+        kioskIO.displayWelcome();
 
         boolean running = true;
         while (running) {
@@ -35,6 +33,7 @@ public class Kiosk {
             switch (choice) {
                 case 1:
                     handleAddToCart();
+                    break;
                 case 2:
                     handleRemoveFromCart();
                     break;
@@ -51,12 +50,11 @@ public class Kiosk {
                 default:
                     kioskIO.displayError("Invalid choice. Please try again.");
             }
-
         }
     }
 
     private void handleAddToCart() {
-        kioskIO.displaySectionHeader("Add Candle to Cart.");
+        kioskIO.displaySectionHeader("Add Candle to Cart");
 
         String productID = kioskIO.getStringInput("Enter ProductID: ");
         if (productID == null) return;
@@ -75,14 +73,14 @@ public class Kiosk {
 
     private void handleRemoveFromCart() {
         if (cartService.isEmpty()) {
-            kioskIO.displayInfo("Cart is empty. Nothing remove.");
+            kioskIO.displayInfo("Cart is empty. Nothing to remove.");
             return;
         }
 
         kioskIO.displaySectionHeader("Remove Candle from Cart");
-        hanleDisplayCart();
+        handleDisplayCart();
 
-        String productID = kioskIO.getStringInput("Enter ProductID to Remove Candle: ");
+        String productID = kioskIO.getStringInput("Enter ProductID to remove: ");
         if (productID == null) return;
 
         Integer quantity = kioskIO.getIntegerInput("Enter quantity to remove: ");
@@ -99,7 +97,7 @@ public class Kiosk {
     }
 
     private void handleDisplayCart() {
-        kioskIO.displaySectionHeader("Cart Contents:");
+        kioskIO.displaySectionHeader("Cart Contents");
 
         if (cartService.isEmpty()) {
             kioskIO.displayInfo("Cart is empty.");
@@ -107,7 +105,7 @@ public class Kiosk {
         }
 
         List<CartItem> cartContents = cartService.getCartContents();
-        handleDisplayCartContents(cartContents);
+        kioskIO.displayCartContents(cartContents);
 
         Result<BigDecimal> totalResult = cartService.getTotalPrice();
         if (totalResult.isSuccess()) {
@@ -115,7 +113,6 @@ public class Kiosk {
         } else {
             kioskIO.displayError("Error calculating total: " + totalResult.getMessage());
         }
-
     }
 
     private void handleCheckout() {
@@ -125,7 +122,7 @@ public class Kiosk {
         }
 
         kioskIO.displaySectionHeader("Checkout");
-        handleDisplayCart();
+        handleDisplayCart(); // Show cart before checkout
 
         boolean confirm = kioskIO.getConfirmation("Proceed with checkout? (y/n): ");
         if (!confirm) {
@@ -140,14 +137,14 @@ public class Kiosk {
         } else {
             kioskIO.displayError("Checkout failed: " + result.getMessage());
         }
-
     }
-
-
-
-
-
-
-
-
 }
+
+
+
+
+
+
+
+
+

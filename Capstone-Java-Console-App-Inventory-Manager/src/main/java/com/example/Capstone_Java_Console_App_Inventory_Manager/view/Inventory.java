@@ -4,10 +4,12 @@ import com.example.Capstone_Java_Console_App_Inventory_Manager.model.Candle;
 import com.example.Capstone_Java_Console_App_Inventory_Manager.model.InventoryCandleItem;
 import com.example.Capstone_Java_Console_App_Inventory_Manager.service.InventoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.util.List;
 
+@Component
 public class Inventory {
 
     private final InventoryService inventoryService;
@@ -29,7 +31,7 @@ public class Inventory {
 
             switch (choice) {
                 case 1:
-                    handledAddOrUpdateItem();
+                    handleAddOrUpdateItem();
                     break;
 
                 case 2:
@@ -51,40 +53,51 @@ public class Inventory {
         }
     }
 
-    private void handledAddOrUpdateItem() {
+    private void handleAddOrUpdateItem() {
+        inventoryIO.displaySectionHeader("Add/Update Candle Inventory Item");
+
         String productID = inventoryIO.getStringInput("Enter ProductID: ");
         if (productID == null) return;
 
         String productName = inventoryIO.getStringInput("Enter Candle Name: ");
+        if (productName == null) return;
+
+        String scentType = inventoryIO.getStringInput("Enter Scent Type: ");
+        if (scentType == null) return;
+
+        String seasonAvailability = inventoryIO.getStringInput("Enter Season Availability: ");
+        if (seasonAvailability == null) return;
 
         Integer quantity = inventoryIO.getIntegerInput("Enter quantity: ");
         if (quantity == null) return;
 
-        BigDecimal price = inventoryIO.getDecimalInput("Enter price: $");
-
-        }
+        BigDecimal price = inventoryIO.getBigDecimalInput("Enter price: $");
+        if (price == null) return;
 
         try {
-        Candle candle = new Candle(productID, productName);
+            // Create a new Candle record with all 4 parameters
+            Candle candle = new Candle(productID, productName, scentType, seasonAvailability);
 
-        InventoryCandleItem item = new InventoryCandleItem(productName, quantity, price);
+            // Create a new InventoryCandleItem with the candle (not productName!)
+            InventoryCandleItem item = new InventoryCandleItem(candle, quantity, price);
 
-        InventoryCandleItem existingItem = inventoryService.getItem(productID);
+            // Check if item already exists
+            InventoryCandleItem existingItem = inventoryService.getItem(productID);
 
-        if (existingItem != null) {
-            inventoryIO.displaySuccess("Item updated successfully!");
-        } else {
-            inventoryIO.displaySuccess("Item added successfully!");
-        }
-        catch (Exception e) {
-            inventoryIO.displayError("Failed to add/update candle item " + e.getMessage());
+            inventoryService.updateOrAddItem(item);
+
+            if (existingItem != null) {
+                inventoryIO.displaySuccess("Item updated successfully!");
+            } else {
+                inventoryIO.displaySuccess("Item added successfully!");
+            }
+        } catch (Exception e) {
+            inventoryIO.displayError("Failed to add/update candle item: " + e.getMessage());
         }
     }
 
-
-
     private void handleRemoveItem() {
-            inventoryIO.displaySectionHeader("Remove inventory item");
+        inventoryIO.displaySectionHeader("Remove inventory item");
 
         List<InventoryCandleItem> allItems = inventoryService.getAllItems();
         if (allItems.isEmpty()) {
@@ -95,16 +108,13 @@ public class Inventory {
         inventoryIO.displayInventoryItems(allItems);
 
         String productID = inventoryIO.getStringInput("Enter ProductID to remove: ");
-        if (productID == null) { return;
-
-        }
+        if (productID == null) return;
 
         InventoryCandleItem existingItem = inventoryService.getItem(productID);
         if (existingItem == null) {
             inventoryIO.displayError("Item with ProductID '" + productID + "' not found.");
             return;
-
-    }
+        }
 
         inventoryIO.displaySectionHeader("Item to Remove");
         inventoryIO.displaySingleItem(existingItem);
@@ -123,11 +133,12 @@ public class Inventory {
         }
     }
 
+
     private void handleViewItem() {
         inventoryIO.displaySectionHeader("View Inventory Item");
 
         String productID = inventoryIO.getStringInput("Enter ProductID: ");
-        if (productID == null) return; // User cancelled
+        if (productID == null) return;
 
         InventoryCandleItem item = inventoryService.getItem(productID);
         if (item == null) {
@@ -151,6 +162,3 @@ public class Inventory {
         inventoryIO.displayInfo("Total items in inventory: " + allItems.size());
     }
 }
-
-
-

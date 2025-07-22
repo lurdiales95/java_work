@@ -11,14 +11,10 @@ public class InventoryService {
     private final InventoryRepository inventoryRepository;
 
     public InventoryService(InventoryRepository inventoryRepository) {
-        this.inventoryRepository = inventoryRepository; }
+        this.inventoryRepository = inventoryRepository;
+    }
 
-
-
-
-
-
-
+    // Updating item
     public void updateOrAddItem(InventoryCandleItem item) {
         if (item == null) {
             throw new IllegalArgumentException("Item cannot be null");
@@ -28,25 +24,27 @@ public class InventoryService {
         InventoryCandleItem existingItem = inventoryRepository.getByProductID(productID);
 
         if (existingItem != null) {
+            // Update existing item
             existingItem.setQuantity(item.getQuantity());
             existingItem.setPrice(item.getPrice());
             inventoryRepository.update(existingItem);
-
         } else {
+            // Add new item
             inventoryRepository.add(item);
         }
     }
-
-
-    public removeItem(String productID) { inventoryRepository.delete(productID);
+    // Removes item
+    public void removeItem(String productID) {
+        inventoryRepository.delete(productID);
     }
 
-
-
-
+    // Retrieves Item from InventoryRepository
     public InventoryCandleItem getItem(String productID) {
-    return inventoryRepository.getByProductID(productID);
+        return inventoryRepository.getByProductID(productID);
     }
 
-    public List<InventoryCandleItem> getAllItems() {return inventoryRepository.getAll();}
+    // Retrieves all items from InventoryRepository
+    public List<InventoryCandleItem> getAllItems() {
+        return inventoryRepository.getAll();
+    }
 }

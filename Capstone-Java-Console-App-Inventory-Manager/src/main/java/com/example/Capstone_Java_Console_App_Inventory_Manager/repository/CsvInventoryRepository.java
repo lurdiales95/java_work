@@ -12,10 +12,9 @@ import java.util.stream.Collectors;
 
 
 public class CsvInventoryRepository implements InventoryRepository {
-    private void loadFromFIle() {}
 
     private final Map<String, InventoryCandleItem> inventory = new HashMap<>();
-    @Value ("$candle-inventory.csv.filepath=data/candle-inventory.csv}")
+    @Value("${candle-inventory.csv.filepath:data/candle-inventory.csv}")
     private String filename;
 
     // We must invoke load from file to the post construct because the @Value  won't be bound until after the object is created
@@ -23,7 +22,9 @@ public class CsvInventoryRepository implements InventoryRepository {
     public void init() { loadFromFile(); }
 
     @Override
-    public List<InventoryCandleItem> getAll() { return new ArrayList<>(inventory.values());
+    public List<InventoryCandleItem> getAll() {
+        return new ArrayList<>(inventory.values());
+    }
 
     @Override
     public List<InventoryCandleItem> getInStock() {
@@ -32,7 +33,6 @@ public class CsvInventoryRepository implements InventoryRepository {
                     .collect(Collectors.toList());
         }
 
-    }
     @Override
         public void add(InventoryCandleItem item) {
         if (item == null) {
@@ -48,7 +48,7 @@ public class CsvInventoryRepository implements InventoryRepository {
             throw new IllegalArgumentException("Item cannot be null.");
         }
         String productID = item.getCandle().productID();
-        if (inventory.containsKey(productID)) {
+        if (!inventory.containsKey(productID)) {
             throw new IllegalArgumentException("Item with ProductID " + productID + " not found.");
         }
         inventory.put(productID, item);
@@ -70,7 +70,7 @@ public class CsvInventoryRepository implements InventoryRepository {
     public InventoryCandleItem getByProductID(String productID) {
         if (productID == null || productID.trim().isEmpty()) {
             throw new IllegalArgumentException("ProductID cannot be null or empty.");
-    }
+        }
         return inventory.get(productID);
     }
 
@@ -92,15 +92,16 @@ public class CsvInventoryRepository implements InventoryRepository {
                 if (parts.length == 6) {
                     String productID = parts[0].trim();
                     String productName = parts[1].trim();
-                    int quantity = Integer.parseInt(parts[2].trim());
-                    BigDecimal price = new BigDecimal(parts[3].trim());
+                    String scentType = parts[2].trim();
+                    String seasonAvailability = parts[3].trim();
+                    int quantity = Integer.parseInt(parts[4].trim());
+                    BigDecimal price = new BigDecimal(parts[5].trim());
 
-                    Candle candle = new Candle(productID, productName);
+                    Candle candle = new Candle(productID, productName, scentType, seasonAvailability);
                     InventoryCandleItem item = new InventoryCandleItem(candle, quantity, price);
                     inventory.put(productID, item);
-
-
                 }
+
             }
         } catch (IOException e) {
             throw new RuntimeException("Error reading from file: " + filename, e);
@@ -109,20 +110,21 @@ public class CsvInventoryRepository implements InventoryRepository {
         }
     }
 
-    private void SaveToFile() {
+    private void saveToFile() {
         try (PrintWriter writer = new PrintWriter(new FileWriter(filename))) {
-            for (InventoryCandleItem item: inventory.values()) {
+            for (InventoryCandleItem item : inventory.values()) {
                 Candle candle = item.getCandle();
-                writer.printf("%s,%s,%d,%.2f%n"),
-                    candle.productID(),
-                    candle.productName(),
-                    item.getQuantity(),
-                    item.getPrice());
+                writer.printf("%s,%s,%s,%s,%d,%.2f%n",
+                        candle.productID(),
+                        candle.productName(),
+                        candle.scentType(),
+                        candle.seasonAvailability(),
+                        item.getQuantity(),
+                        item.getPrice());
             }
 
         } catch (IOException e) {
             throw new RuntimeException("Error writing to file: " + filename, e);
         }
     }
-
 }

@@ -4,7 +4,7 @@ package com.example.Capstone_Java_Console_App_Inventory_Manager.model;
 import java.math.BigDecimal;
 
 public class InventoryCandleItem {
-    private Candle candle;
+    private final Candle candle;
     private int quantity;
     private BigDecimal price;
 

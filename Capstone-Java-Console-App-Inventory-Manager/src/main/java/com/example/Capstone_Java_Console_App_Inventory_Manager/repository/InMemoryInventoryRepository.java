@@ -16,32 +16,52 @@ public class InMemoryInventoryRepository implements InventoryRepository {
     }
 
     private void initializeSampleData() {
-        addSampleCandle("5905", "Japanese Cherry Blossom Candle", 150, "26.95");
-        addSampleCandle("4535", "Fresh Cut Lilacs Candle", 150,"10.99");
-        addSampleCandle("6757", "Sweater Weather Candle", 150, "26.95");
-        addSampleCandle("3568", "Eucalyptus Mint Candle",150, "26.95");
-        addSampleCandle("7737", "Honeycrisp Apple", 150, "16.95");
-        addSampleCandle("6760", "Raspberry Mimosa", 150, "26.95");
-        addSampleCandle("3564", "Midnight Blue Citrus",150, "26.95");
-        addSampleCandle("6413", "Campfire Cocoa", 150, "26.95");
-        addSampleCandle("7735", "Pumpkin Pecan Waffles", 150, "26.95");
-        addSampleCandle("6421", "Pumpkin Cinnamon Bun", 150, "26.95");
-        addSampleCandle("7778", "Praline Delight", 150, "24.95");
-        addSampleCandle("8256", "Vampire Blood", 150, "39.95");
-        addSampleCandle("6939", "Candy Apple Cauldron", 150, "39.95");
-        addSampleCandle("8249", "I Scream Float", 150, "26.95");
-        addSampleCandle("8247", "Ghoul Friend", 150, "26.95");
+        // Botanical & Blooms - Floral scented candles.
+        addSampleCandle("5905", "Japanese Cherry Blossom Candle", "Botanical & Blooms", "Year Round", 150, "26.95");
+        addSampleCandle("4535", "Fresh Cut Lilacs Candle", "Botanical & Blooms", "Spring", 150, "10.99");
+        addSampleCandle("8247", "Ghoul Friend", "Botanical & Blooms", "Fall", 150, "26.95");
+        addSampleCandle("3268", "Moonlight Path", "Botanical & Blooms", "Winter", 150, "26.95");
+        addSampleCandle("3841", "Orange Lily Bloom", "Botanical & Blooms", "Summer", 150, "10.99");
 
+        // Fresh & Clean - More likely to have less floral, fruity, or sweet scents.
+        addSampleCandle("6757", "Sweater Weather Candle", "Fresh & Clean", "Winter", 150, "26.95");
+        addSampleCandle("3568", "Eucalyptus Mint Candle", "Fresh & Clean", "Year Round", 150, "26.95");
+        addSampleCandle("7408", "Sweet Tea & Lemonade", "Fresh & Clean", "Summer", 150, "26.95");
+        addSampleCandle("6411", "Mountainside Mist", "Fresh & Clean", "Winter", 150, "26.96");
+        addSampleCandle("8332", "Vanilla Breeze", "Fresh & Clean", "Spring", 150, "26.95");
+
+        // Fruity & Bright - Scents focused on citrus scents.
+        addSampleCandle("7737", "Honeycrisp Apple", "Fruity & Bright", "Year Round", 150, "16.95");
+        addSampleCandle("6760", "Raspberry Mimosa", "Fruity & Bright", "Summer", 150, "26.95");
+        addSampleCandle("3564", "Midnight Blue Citrus", "Fruity & Bright", "Year Round", 150, "26.95");
+        addSampleCandle("6939", "Candy Apple Cauldron", "Fruity & Bright", "Fall", 150, "39.95");
+        addSampleCandle("8256", "Vampire Blood", "Fruity & Bright", "Fall", 150, "39.95");
+
+        // Treats & Sweets - Scents focus on candy, dessert, and sweet drinks.
+        addSampleCandle("6413", "Campfire Cocoa", "Treats & Sweets", "Winter", 150, "26.95");
+        addSampleCandle("7735", "Pumpkin Pecan Waffles", "Treats & Sweets", "Fall", 150, "26.95");
+        addSampleCandle("6421", "Pumpkin Cinnamon Bun", "Treats & Sweets", "Fall", 150, "26.95");
+        addSampleCandle("7778", "Praline Delight", "Treats & Sweets", "Fall", 150, "24.95");
+        addSampleCandle("8249", "I Scream Float", "Treats & Sweets", "Fall", 150, "26.95");
+
+        // Warm & Woodsy - Scents are bit stronger than Fresh & Clean. Cologne-like scents.
+        addSampleCandle("6419", "Leather & Brandy", "Warm & Woodsy", "Year Round", 150, "26.95");
+        addSampleCandle("7404", "Palo Santo", "Warm & Woodsy", "Spring", 150, "26.96");
+        addSampleCandle("8426", "Sunrise Woods", "Warm & Woodsy", "Summer", 150, "24.95");
+        addSampleCandle("3455", "Into the Night", "Warm & Woodsy", "Winter", 150, "26.95");
+        addSampleCandle("8001", "Vanilla Ease", "Warm & Woodsy", "Spring", 150, "26.95");
     }
 
-    private void addSampleCandle(String productID, String productName, int quantity, String price) {
-        Candle candle = new Candle(productID, productName);
+    private void addSampleCandle(String productID, String productName, String scentType, String seasonAvailability, int quantity, String price) {
+        Candle candle = new Candle(productID, productName, scentType, seasonAvailability);
         InventoryCandleItem item = new InventoryCandleItem(candle, quantity, new BigDecimal(price));
         inventory.put(productID, item);
     }
 
     @Override
-    public List<InventoryCandleItem> getAll() { return new ArrayList<>(inventory.values()); }
+    public List<InventoryCandleItem> getAll() {
+        return new ArrayList<>(inventory.values());
+    }
 
     @Override
     public List<InventoryCandleItem> getInStock() {
@@ -50,7 +70,6 @@ public class InMemoryInventoryRepository implements InventoryRepository {
                 .collect(Collectors.toList());
     }
 
-\
 
     @Override
     public void add(InventoryCandleItem item) {
@@ -71,23 +90,22 @@ public class InMemoryInventoryRepository implements InventoryRepository {
         if (!inventory.containsKey(productID)) {
             throw new IllegalArgumentException("Item with ProductID " + productID + " not found");
         }
-        inventory.remove(productID);
+        inventory.put(productID, item);
     }
 
     @Override
     public void delete(String productID) {
-      if (productID == null || productID.trim().isEmpty()) {
-          throw new IllegalArgumentException("ProductID cannot be null or empty.");
-      }
-      inventory.remove(productID);
+        if (productID == null || productID.trim().isEmpty()) {
+            throw new IllegalArgumentException("ProductID cannot be null or empty.");
+        }
+        inventory.remove(productID);
     }
 
     @Override
     public InventoryCandleItem getByProductID(String productID) {
         if (productID == null || productID.trim().isEmpty()) {
             throw new IllegalArgumentException("ProductID cannot be null or empty.");
-
-    }
+        }
         return inventory.get(productID);
     }
 }

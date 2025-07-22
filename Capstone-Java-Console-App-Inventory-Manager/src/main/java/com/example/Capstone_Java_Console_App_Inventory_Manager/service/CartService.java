@@ -22,7 +22,7 @@ public class CartService {
 
     public Result<Void> addToCart(String productID, int quantity) {
         if (productID == null || productID.trim().isEmpty()) {
-            return new Result<>(false, "ProductID cannot be null or empty,", null);
+            return new Result<>(false, "ProductID cannot be null or empty", null);
         }
         if (quantity <= 0) {
             return new Result<>(false, "Quantity must be greater than 0", null);
@@ -30,6 +30,7 @@ public class CartService {
         }
 
         InventoryCandleItem item = inventoryRepository.getByProductID(productID);
+
         if (item == null) {
             return new Result<>(false, "Product not found with ProductID " + productID, null);
         }
@@ -39,7 +40,7 @@ public class CartService {
 
         if (newTotalQuantity > item.getQuantity()) {
             return new Result<>(false,
-                    String.format("Not enough stock. Available: %d, Requested: d%", item.getQuantity(), newTotalQuantity), null);
+                    String.format("Not enough stock. Available: %d, Requested: %d", item.getQuantity(), newTotalQuantity), null);
         }
 
         if (cart.containsKey(productID)) {
@@ -54,13 +55,13 @@ public class CartService {
 
         }
 
-        return new Result<>()(true,
+        return new Result<>(true,
                 String.format("Added %d candles of '%s' to cart", quantity, item.getCandle().productName()), null);
     }
 
     public Result<Void> removeFromCart(String productID, int quantity) {
         if (productID == null || productID.trim().isEmpty()) {
-            return new Result<>(false, "Quantity must be greater than 0", null);
+            return new Result<>(false, "ProductID cannot be null or empty", null);
         }
         if (quantity <= 0) {
             return new Result<>(false, "Quantity must be greater than 0", null);
@@ -111,7 +112,7 @@ public class CartService {
             CartItem cartItem = entry.getValue();
             int purchasedQuantity = cartItem.getQuantity();
 
-            InventoryCandleItem item = inventoryRepository.getByProductID();
+            InventoryCandleItem item = inventoryRepository.getByProductID(productID);
             item.setQuantity(item.getQuantity() - purchasedQuantity);
             inventoryRepository.update(item);
         }
