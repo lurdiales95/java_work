@@ -15,22 +15,21 @@ import java.util.*;
 public class CartService {
 
     private final InventoryRepository inventoryRepository;
-    private final Map<String, CartItem> cart = new HashMap<>();
+    private final Map<String, CartItem> cart = new HashMap<>(); // ProductID -> CartItem
 
     @Autowired
-    public CartService(InventoryRepository inventoryRepository) { this.inventoryRepository = inventoryRepository; }
-
+    public CartService(InventoryRepository inventoryRepository) {
+        this.inventoryRepository = inventoryRepository;
+    }
     public Result<Void> addToCart(String productID, int quantity) {
         if (productID == null || productID.trim().isEmpty()) {
             return new Result<>(false, "ProductID cannot be null or empty", null);
         }
         if (quantity <= 0) {
             return new Result<>(false, "Quantity must be greater than 0", null);
-
         }
 
         InventoryCandleItem item = inventoryRepository.getByProductID(productID);
-
         if (item == null) {
             return new Result<>(false, "Product not found with ProductID " + productID, null);
         }
@@ -40,7 +39,8 @@ public class CartService {
 
         if (newTotalQuantity > item.getQuantity()) {
             return new Result<>(false,
-                    String.format("Not enough stock. Available: %d, Requested: %d", item.getQuantity(), newTotalQuantity), null);
+                    String.format("Not enough stock. Available: %d, Requested: %d",
+                            item.getQuantity(), newTotalQuantity), null);
         }
 
         if (cart.containsKey(productID)) {
@@ -52,7 +52,6 @@ public class CartService {
             BigDecimal price = item.getPrice().setScale(2, RoundingMode.HALF_UP);
             CartItem newCartItem = new CartItem(item.getCandle(), newTotalQuantity, price);
             cart.put(productID, newCartItem);
-
         }
 
         return new Result<>(true,
@@ -73,16 +72,16 @@ public class CartService {
 
         CartItem cartItem = cart.get(productID);
         int currentQuantity = cartItem.getQuantity();
-        String candle = cartItem.getCandle().productName();
+        String productName = cartItem.getCandle().productName();
 
         if (quantity >= currentQuantity) {
             cart.remove(productID);
             return new Result<>(true,
-                    String.format("Removed all of '%s' candles from cart", candle), null);
+                    String.format("Removed all of '%s' candles from cart", productName), null);
         } else {
             cartItem.setQuantity(currentQuantity - quantity);
             return new Result<>(true,
-                    String.format("Removed %d candles of '%s' from cart", quantity, candle), null);
+                    String.format("Removed %d candles of '%s' from cart", quantity, productName), null);
         }
     }
     public Result<BigDecimal> getTotalPrice() {
@@ -91,8 +90,8 @@ public class CartService {
         for (CartItem cartItem : cart.values()) {
             total = total.add(cartItem.getExtendedPrice());
         }
-
         return new Result<>(true, "Total calculated successfully", total.setScale(2, RoundingMode.HALF_UP));
+
     }
 
     public Result<String> checkout() {
