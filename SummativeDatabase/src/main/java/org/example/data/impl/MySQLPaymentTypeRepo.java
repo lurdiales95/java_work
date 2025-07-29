@@ -1,6 +1,6 @@
 package org.example.data.impl;
 
-import org.example.data.PaymentTypeRepo;
+import org.example.data.repository.PaymentTypeRepo;
 import org.example.data.exceptions.InternalErrorException;
 import org.example.data.mappers.PaymentTypeMapper;
 import org.example.model.PaymentType;

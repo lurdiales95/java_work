@@ -1,12 +1,12 @@
 package org.example.service;
 
-import org.example.data.ItemRepo;
-import org.example.data.OrderRepo;
-import org.example.data.ServerRepo;
-import org.example.data.TaxRepo;
+import org.example.data.repository.ItemRepo;
+import org.example.data.repository.OrderRepo;
+import org.example.data.repository.ServerRepo;
+import org.example.data.repository.TaxRepo;
 import org.example.data.exceptions.InternalErrorException;
 import org.example.data.exceptions.RecordNotFoundException;
-import org.example.data.PaymentTypeRepo;
+import org.example.data.repository.PaymentTypeRepo;
 import org.example.model.*;
 import org.springframework.stereotype.Service;
 

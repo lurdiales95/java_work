@@ -1,6 +1,6 @@
 package org.example.data.impl;
 
-import org.example.data.OrderRepo;
+import org.example.data.repository.OrderRepo;
 import org.example.data.exceptions.InternalErrorException;
 import org.example.data.exceptions.RecordNotFoundException;
 import org.example.data.mappers.*;

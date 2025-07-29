@@ -1,8 +1,6 @@
-package org.example.data.impl;
+package org.example.data.repository;
 
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class MySQLItemRepoTest {
 

@@ -1,6 +1,6 @@
 package org.example.data.impl;
 
-import org.example.data.ItemRepo;
+import org.example.data.repository.ItemRepo;
 import org.example.data.exceptions.InternalErrorException;
 import org.example.data.exceptions.RecordNotFoundException;
 import org.example.model.Item;
@@ -25,6 +25,25 @@ public class MySQLItemRepo implements ItemRepo {
     }
 
     @Override
+    public List<Item> getAllAvailableItems(LocalDate today) throws InternalErrorException {
+        String sql = """
+            SELECT ItemID, ItemCategoryID, ItemName, ItemDescription, 
+                   StartDate, EndDate, UnitPrice 
+            FROM Item 
+            WHERE ? >= StartDate 
+            AND (EndDate IS NULL OR ? <= EndDate)
+            ORDER BY ItemCategoryID, ItemName
+            """;
+
+        try {
+            return jdbcTemplate.query(sql, itemRowMapper(), today, today);
+        } catch (DataAccessException e) {
+            throw new InternalErrorException(e);
+        }
+    }
+
+
+    @Override
     public Item getItemById(int id) throws RecordNotFoundException, InternalErrorException {
         String sql = """
             SELECT ItemID, ItemCategoryID, ItemName, ItemDescription, 
@@ -42,23 +61,7 @@ public class MySQLItemRepo implements ItemRepo {
         }
     }
 
-    @Override
-    public List<Item> getAllAvailableItems(LocalDate today) throws InternalErrorException {
-        String sql = """
-            SELECT ItemID, ItemCategoryID, ItemName, ItemDescription, 
-                   StartDate, EndDate, UnitPrice 
-            FROM Item 
-            WHERE ? >= StartDate 
-            AND (EndDate IS NULL OR ? <= EndDate)
-            ORDER BY ItemCategoryID, ItemName
-            """;
 
-        try {
-            return jdbcTemplate.query(sql, itemRowMapper(), today, today);
-        } catch (DataAccessException e) {
-            throw new InternalErrorException(e);
-        }
-    }
 
     @Override
     public List<Item> getItemsByCategory(LocalDate today, int itemCategoryID) throws InternalErrorException {

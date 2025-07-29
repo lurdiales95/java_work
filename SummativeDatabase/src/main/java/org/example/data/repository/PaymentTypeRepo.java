@@ -1,4 +1,4 @@
-package org.example.data;
+package org.example.data.repository;
 
 import org.example.data.exceptions.InternalErrorException;
 import org.example.model.PaymentType;

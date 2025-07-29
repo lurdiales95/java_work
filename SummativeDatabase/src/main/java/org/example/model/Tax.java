@@ -1,6 +1,7 @@
 package org.example.model;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.Objects;
 
@@ -62,5 +63,9 @@ public class Tax {
                 ", startDate=" + startDate +
                 ", endDate=" + endDate +
                 '}';
+    }
+
+    public Instant getEffectiveDate() {
+        return null;
     }
 }
