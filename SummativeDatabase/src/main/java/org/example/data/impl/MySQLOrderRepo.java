@@ -16,6 +16,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.PreparedStatement;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Objects;
 
 
 @Repository
@@ -96,7 +97,7 @@ public class MySQLOrderRepo implements OrderRepo {
                 return ps;
             }, keyHolder);
 
-            order.setOrderID(keyHolder.getKey().intValue());
+            order.setOrderID(Objects.requireNonNull(keyHolder.getKey()).intValue());
 
             // Save order items
             saveOrderItems(order);

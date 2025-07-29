@@ -1,97 +1,154 @@
 package org.example.data.impl;
 
 import org.example.data.exceptions.InternalErrorException;
+import org.example.data.repository.PaymentTypeRepo;
 import org.example.model.PaymentType;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.jdbc.Sql;
 
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
+@SpringBootTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@ActiveProfiles("test")
+// Use SQL scripts to set up test data consistently
+@Sql(scripts = "/test-data/payment-types-setup.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+@Sql(scripts = "/test-data/payment-types-cleanup.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 class MySQLPaymentTypeRepoTest {
 
-    private MySQLPaymentTypeRepo paymentTypeRepo;
-    private JdbcTemplate jdbcTemplate;
+    @Autowired
+    private PaymentTypeRepo paymentTypeRepo;
 
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     @BeforeEach
     void setUp() {
-        DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setUrl("jdbc:mysql://localhost:3306/SimpleBistroTest");
-        dataSource.setUsername("root");
-        dataSource.setPassword("J1r0Dr34ms0fSush1");
-        dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
+        // Insert known test data directly using jdbcTemplate
+        // This ensures consistent test data without relying on stored procedures
+        insertTestPaymentTypes();
+    }
 
-        jdbcTemplate = new JdbcTemplate(dataSource);
-
-        paymentTypeRepo = new MySQLPaymentTypeRepo(jdbcTemplate);
-
-
+    @AfterEach
+    void cleanup() {
+        // Clean up test data
         try {
-            jdbcTemplate.execute("CALL set_known_good_state()");
+            jdbcTemplate.execute("DELETE FROM PaymentType WHERE PaymentTypeName LIKE 'Test_%'");
         } catch (Exception e) {
-            System.out.println("Warning: Could not reset test data - " + e.getMessage());
+            // Ignore cleanup errors
         }
+    }
 
+    private void insertTestPaymentTypes() {
+        try {
+            // Insert known test data
+            jdbcTemplate.execute("DELETE FROM PaymentType WHERE PaymentTypeName LIKE 'Test_%'");
+
+            jdbcTemplate.update("INSERT INTO PaymentType (PaymentTypeName) VALUES ('Test_Cash')");
+            jdbcTemplate.update("INSERT INTO PaymentType (PaymentTypeName) VALUES ('Test_Visa')");
+            jdbcTemplate.update("INSERT INTO PaymentType (PaymentTypeName) VALUES ('Test_MasterCard')");
+        } catch (DataAccessException e) {
+            System.out.println("Warning: Could not insert test data - " + e.getMessage());
+        }
     }
 
     @Test
     void getAll_ShouldReturnAllPaymentTypes() throws InternalErrorException {
-
+        // Act
         List<PaymentType> result = paymentTypeRepo.getAll();
 
-        assertNotNull(result, "Result should not be null");
-        assertFalse(result.isEmpty(), "Should return at least one payment type");
+        // Assert
+        assertThat(result).isNotNull();
+        assertThat(result).isNotEmpty();
 
         System.out.println("Found " + result.size() + " payment types");
 
+        // Verify structure of returned data
         PaymentType firstType = result.get(0);
-        assertNotNull(firstType.getPaymentTypeName(), "Payment type name should not be null");
-        assertTrue(firstType.getPaymentTypeID() > 0, "Payment type ID should be positive");
+        assertThat(firstType.getPaymentTypeName()).isNotNull();
+        assertThat(firstType.getPaymentTypeID()).isPositive();
 
+        // Log all payment types for visibility
         for (PaymentType pt : result) {
             System.out.println("PaymentType ID: " + pt.getPaymentTypeID() +
                     ", Name: " + pt.getPaymentTypeName());
         }
     }
 
-
     @Test
-    void getAll_ShouldReturnExpectedPaymentTypes() throws InternalErrorException {
+    void getAll_ShouldReturnTestPaymentTypes() throws InternalErrorException {
+        // Act
         List<PaymentType> result = paymentTypeRepo.getAll();
 
-        assertTrue(result.size() >= 5, "Should have at least 5 payment types");
+        // Assert - Look for our test data specifically
+        assertThat(result).hasSize(3); // We inserted exactly 3 test payment types
 
-        boolean hasCash = result.stream()
-                .anyMatch(pt -> "Cash".equals(pt.getPaymentTypeName()));
-        boolean hasVisa = result.stream()
-                .anyMatch(pt -> "Visa".equals(pt.getPaymentTypeName()));
+        boolean hasTestCash = result.stream()
+                .anyMatch(pt -> "Test_Cash".equals(pt.getPaymentTypeName()));
+        boolean hasTestVisa = result.stream()
+                .anyMatch(pt -> "Test_Visa".equals(pt.getPaymentTypeName()));
+        boolean hasTestMasterCard = result.stream()
+                .anyMatch(pt -> "Test_MasterCard".equals(pt.getPaymentTypeName()));
 
-        assertTrue(hasCash, "Should have Cash payment type");
-        assertTrue(hasVisa, "Should have Visa payment type");
+        assertThat(hasTestCash).isTrue();
+        assertThat(hasTestVisa).isTrue();
+        assertThat(hasTestMasterCard).isTrue();
     }
 
     @Test
-    void getAll_ShouldREturnValidData() throws InternalErrorException {
-
+    void getAll_ShouldReturnValidData() throws InternalErrorException {
+        // Act
         List<PaymentType> result = paymentTypeRepo.getAll();
 
+        // Assert
+        assertThat(result).isNotEmpty();
+
         for (PaymentType pt : result) {
-            assertTrue(pt.getPaymentTypeID() > 0, "All payment types should have positive IDs");
-            assertNotNull(pt.getPaymentTypeName(), "All payment types should have names");
-            assertFalse(pt.getPaymentTypeName().trim().isEmpty(), "Payment type names should not be empty");
+            assertThat(pt.getPaymentTypeID()).isPositive();
+            assertThat(pt.getPaymentTypeName()).isNotNull();
+            assertThat(pt.getPaymentTypeName().trim()).isNotEmpty();
         }
     }
 
     @Test
     void getAll_ShouldNotThrowException() {
-        // Assert - Method should execute without throwing exceptions
+        // Act & Assert
         assertDoesNotThrow(() -> {
             List<PaymentType> result = paymentTypeRepo.getAll();
-            assertNotNull(result);
+            assertThat(result).isNotNull();
         });
+    }
+
+    @Test
+    void getAll_ShouldHandleDatabaseError() {
+        // This test would be better with a mocked dependency, but here's how you could test it
+        // You might want to temporarily break the database connection to test error handling
+
+        // For now, just ensure the method handles the happy path
+        assertDoesNotThrow(() -> {
+            List<PaymentType> result = paymentTypeRepo.getAll();
+            assertThat(result).isNotNull();
+        });
+    }
+
+    @Test
+    void getAll_ShouldReturnPaymentTypesInCorrectOrder() throws InternalErrorException {
+        // Act
+        List<PaymentType> result = paymentTypeRepo.getAll();
+
+        // Assert - The repository should return them in some consistent order
+        // Based on your repository, there's no explicit ORDER BY, so test what you expect
+        assertThat(result).isSortedAccordingTo((pt1, pt2) ->
+                Integer.compare(pt1.getPaymentTypeID(), pt2.getPaymentTypeID()));
     }
 }

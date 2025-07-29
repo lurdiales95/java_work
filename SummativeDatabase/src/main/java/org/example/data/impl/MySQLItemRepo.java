@@ -6,6 +6,7 @@ import org.example.data.exceptions.RecordNotFoundException;
 import org.example.model.Item;
 import org.example.model.ItemCategory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Primary;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -16,13 +17,10 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Repository
+@Primary
 public class MySQLItemRepo implements ItemRepo {
-
-    private final JdbcTemplate jdbcTemplate;
-
-    public MySQLItemRepo(@Autowired JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     @Override
     public List<Item> getAllAvailableItems(LocalDate today) throws InternalErrorException {
