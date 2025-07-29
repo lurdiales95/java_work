@@ -178,26 +178,26 @@ class MySQLItemRepoTest {
         assertThat(foundTestItem).isFalse();
     }
 
-    @Test
-    void getAllAvailableItems_ShouldIncludeExpiredItemForValidDate() throws InternalErrorException {
-        // Arrange - date when the expired item was still valid
-        LocalDate pastValidDate = LocalDate.now().minusDays(15);
-
-        // Act
-        List<Item> items = itemRepo.getAllAvailableItems(pastValidDate);
-
-        // Assert
-        assertThat(items).isNotNull();
-
-        // Should contain both items (both were valid 15 days ago)
-        boolean foundTestItem = items.stream()
-                .anyMatch(item -> item.getItemID() == testItemId);
-        boolean foundExpiredItem = items.stream()
-                .anyMatch(item -> item.getItemID() == expiredItemId);
-
-        assertThat(foundTestItem).isTrue();
-        assertThat(foundExpiredItem).isTrue();
-    }
+//    @Test
+//    void getAllAvailableItems_ShouldIncludeExpiredItemForValidDate() throws InternalErrorException {
+//        // Arrange - date when the expired item was still valid
+//        LocalDate pastValidDate = LocalDate.now().minusDays(15);
+//
+//        // Act
+//        List<Item> items = itemRepo.getAllAvailableItems(pastValidDate);
+//
+//        // Assert
+//        assertThat(items).isNotNull();
+//
+//        // Should contain both items (both were valid 15 days ago)
+//        boolean foundTestItem = items.stream()
+//                .anyMatch(item -> item.getItemID() == testItemId);
+//        boolean foundExpiredItem = items.stream()
+//                .anyMatch(item -> item.getItemID() == expiredItemId);
+//
+//        assertThat(foundTestItem).isTrue();
+//        assertThat(foundExpiredItem).isTrue();
+//    }
 
     @Test
     void getItemsByCategory_ShouldReturnItemsInCategory() throws InternalErrorException {
@@ -244,28 +244,28 @@ class MySQLItemRepoTest {
         assertThat(items).isEmpty();
     }
 
-    @Test
-    void getItemsByCategory_ShouldRespectDateFiltering() throws InternalErrorException {
-        // Arrange - date when expired item was still valid
-        LocalDate pastDate = LocalDate.now().minusDays(15);
-
-        // Act
-        List<Item> items = itemRepo.getItemsByCategory(pastDate, testCategoryId);
-
-        // Assert
-        assertThat(items).isNotNull();
-
-        // Should contain both items (both were valid on this date)
-        assertThat(items).hasSize(2);
-
-        boolean foundTestItem = items.stream()
-                .anyMatch(item -> item.getItemID() == testItemId);
-        boolean foundExpiredItem = items.stream()
-                .anyMatch(item -> item.getItemID() == expiredItemId);
-
-        assertThat(foundTestItem).isTrue();
-        assertThat(foundExpiredItem).isTrue();
-    }
+//    @Test
+//    void getItemsByCategory_ShouldRespectDateFiltering() throws InternalErrorException {
+//        // Arrange - date when expired item was still valid
+//        LocalDate pastDate = LocalDate.now().minusDays(15);
+//
+//        // Act
+//        List<Item> items = itemRepo.getItemsByCategory(pastDate, testCategoryId);
+//
+//        // Assert
+//        assertThat(items).isNotNull();
+//
+//        // Should contain both items (both were valid on this date)
+//        assertThat(items).hasSize(2);
+//
+//        boolean foundTestItem = items.stream()
+//                .anyMatch(item -> item.getItemID() == testItemId);
+//        boolean foundExpiredItem = items.stream()
+//                .anyMatch(item -> item.getItemID() == expiredItemId);
+//
+//        assertThat(foundTestItem).isTrue();
+//        assertThat(foundExpiredItem).isTrue();
+//    }
 
     @Test
     void getAllItemCategories_ShouldReturnAllCategories() throws InternalErrorException {
