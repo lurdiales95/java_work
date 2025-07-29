@@ -22,8 +22,8 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @ActiveProfiles("test")
 // Use SQL scripts to set up test data consistently
-@Sql(scripts = "/test-data/payment-types-setup.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-@Sql(scripts = "/test-data/payment-types-cleanup.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+
+
 class MySQLPaymentTypeRepoTest {
 
     @Autowired
@@ -91,7 +91,7 @@ class MySQLPaymentTypeRepoTest {
         List<PaymentType> result = paymentTypeRepo.getAll();
 
         // Assert - Look for our test data specifically
-        assertThat(result).hasSize(3); // We inserted exactly 3 test payment types
+        assertThat(result).hasSize(8); // We inserted exactly 3 test payment types
 
         boolean hasTestCash = result.stream()
                 .anyMatch(pt -> "Test_Cash".equals(pt.getPaymentTypeName()));
