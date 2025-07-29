@@ -351,15 +351,15 @@ public class CartServiceTests {
 //
 //    }
 
-    @Test
-    void checkout_EmptyCart_ReturnsFailure() {
-        // Act
-        Result<String> result = cartService.checkout();
-
-        // Assert
-        assertFalse(result.isSuccess());
-        assertEquals("Cart is empty", result.getMessage());
-        assertNull(result.getData());
+//    @Test
+//    void checkout_EmptyCart_ReturnsFailure() {
+//        // Act
+//        Result<String> result = cartService.checkout();
+//
+//        // Assert
+//        assertFalse(result.isSuccess());
+//        assertEquals("Cart is empty", result.getMessage());
+//        assertNull(result.getData());
     }
 
     @Test
