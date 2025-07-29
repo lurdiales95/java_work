@@ -31,10 +31,3 @@ public class MySQLPaymentTypeRepo implements PaymentTypeRepo {
         }
     }
 }
-
-// Make this work with SQL and GDC Template
-// create an implementation for each interface, implement methods, make work
-// Put mapper classes in Mappers folder
-// Look at what interfaces want. then models. Look at queries to hydrate models.
-// Look at PaymentType model
-// 5 implementations with unit tests add test file for each repository
