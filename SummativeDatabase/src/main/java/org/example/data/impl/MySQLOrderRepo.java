@@ -18,11 +18,22 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.Objects;
 
-
 @Repository
 public class MySQLOrderRepo implements OrderRepo {
 
     private final JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    private OrderMapper orderMapper;
+
+    @Autowired
+    private ServerMapper serverMapper;
+
+    @Autowired
+    private OrderItemWithItemMapper orderItemWithItemMapper;
+
+    @Autowired
+    private PaymentWithTypeMapper paymentWithTypeMapper;
 
     public MySQLOrderRepo(@Autowired JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -37,7 +48,7 @@ public class MySQLOrderRepo implements OrderRepo {
             """;
 
         try {
-            Order order = jdbcTemplate.queryForObject(sql, new OrderMapper(), id);
+            Order order = jdbcTemplate.queryForObject(sql, orderMapper, id);
 
             // Load related data
             loadServerForOrder(order);
@@ -61,7 +72,7 @@ public class MySQLOrderRepo implements OrderRepo {
             """;
 
         try {
-            List<Order> orders = jdbcTemplate.query(sql, new OrderMapper());
+            List<Order> orders = jdbcTemplate.query(sql, orderMapper);
 
             // Load related data for each order
             for (Order order : orders) {
@@ -172,7 +183,7 @@ public class MySQLOrderRepo implements OrderRepo {
             """;
 
         try {
-            Server server = jdbcTemplate.queryForObject(sql, new ServerMapper(), order.getServerID());
+            Server server = jdbcTemplate.queryForObject(sql, serverMapper, order.getServerID());
             order.setServer(server);
         } catch (DataAccessException e) {
             throw new InternalErrorException(e);
@@ -190,26 +201,7 @@ public class MySQLOrderRepo implements OrderRepo {
             """;
 
         try {
-            List<OrderItem> items = jdbcTemplate.query(sql, (rs, rowNum) -> {
-                OrderItem orderItem = new OrderItem();
-                orderItem.setOrderItemID(rs.getInt("OrderItemID"));
-                orderItem.setOrderID(rs.getInt("OrderID"));
-                orderItem.setItemID(rs.getInt("ItemID"));
-                orderItem.setQuantity(rs.getInt("Quantity"));
-                orderItem.setPrice(rs.getBigDecimal("Price"));
-
-                // Create and populate the Item
-                Item item = new Item();
-                item.setItemID(rs.getInt("ItemID"));
-                item.setItemName(rs.getString("ItemName"));
-                item.setItemDescription(rs.getString("ItemDescription"));
-                item.setUnitPrice(rs.getBigDecimal("UnitPrice"));
-                item.setItemCategoryID(rs.getInt("ItemCategoryID"));
-                orderItem.setItem(item);
-
-                return orderItem;
-            }, order.getOrderID());
-
+            List<OrderItem> items = jdbcTemplate.query(sql, orderItemWithItemMapper, order.getOrderID());
             order.setItems(items);
         } catch (DataAccessException e) {
             throw new InternalErrorException(e);
@@ -227,22 +219,7 @@ public class MySQLOrderRepo implements OrderRepo {
             """;
 
         try {
-            List<Payment> payments = jdbcTemplate.query(sql, (rs, rowNum) -> {
-                Payment payment = new Payment();
-                payment.setPaymentID(rs.getInt("PaymentID"));
-                payment.setPaymentTypeID(rs.getInt("PaymentTypeID"));
-                payment.setOrderID(rs.getInt("OrderID"));
-                payment.setAmount(rs.getBigDecimal("Amount"));
-
-                // Create and populate the PaymentType
-                PaymentType paymentType = new PaymentType();
-                paymentType.setPaymentTypeID(rs.getInt("PaymentTypeID"));
-                paymentType.setPaymentTypeName(rs.getString("PaymentTypeName"));
-                payment.setPaymentType(paymentType);
-
-                return payment;
-            }, order.getOrderID());
-
+            List<Payment> payments = jdbcTemplate.query(sql, paymentWithTypeMapper, order.getOrderID());
             order.setPayments(payments);
         } catch (DataAccessException e) {
             throw new InternalErrorException(e);

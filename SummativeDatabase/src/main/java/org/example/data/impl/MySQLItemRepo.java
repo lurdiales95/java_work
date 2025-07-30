@@ -1,5 +1,7 @@
 package org.example.data.impl;
 
+import org.example.data.mappers.ItemCategoryMapper;
+import org.example.data.mappers.ItemMapper;
 import org.example.data.repository.ItemRepo;
 import org.example.data.exceptions.InternalErrorException;
 import org.example.data.exceptions.RecordNotFoundException;
@@ -10,7 +12,6 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -22,19 +23,27 @@ public class MySQLItemRepo implements ItemRepo {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
+    @Autowired
+    private ItemMapper itemMapper;
+
+    @Autowired
+    private ItemCategoryMapper itemCategoryMapper;
+
+
+
     @Override
     public List<Item> getAllAvailableItems(LocalDate today) throws InternalErrorException {
         String sql = """
-            SELECT ItemID, ItemCategoryID, ItemName, ItemDescription, 
-                   StartDate, EndDate, UnitPrice 
-            FROM Item 
-            WHERE ? >= StartDate 
-            AND (EndDate IS NULL OR ? <= EndDate)
-            ORDER BY ItemCategoryID, ItemName
-            """;
+                SELECT ItemID, ItemCategoryID, ItemName, ItemDescription, 
+                       StartDate, EndDate, UnitPrice 
+                FROM Item 
+                WHERE ? >= StartDate 
+                AND (EndDate IS NULL OR ? <= EndDate)
+                ORDER BY ItemCategoryID, ItemName
+                """;
 
         try {
-            return jdbcTemplate.query(sql, itemRowMapper(), today, today);
+            return jdbcTemplate.query(sql, itemMapper, today, today);
         } catch (DataAccessException e) {
             throw new InternalErrorException(e);
         }
@@ -44,14 +53,14 @@ public class MySQLItemRepo implements ItemRepo {
     @Override
     public Item getItemById(int id) throws RecordNotFoundException, InternalErrorException {
         String sql = """
-            SELECT ItemID, ItemCategoryID, ItemName, ItemDescription, 
-                   StartDate, EndDate, UnitPrice 
-            FROM Item 
-            WHERE ItemID = ?
-            """;
+                SELECT ItemID, ItemCategoryID, ItemName, ItemDescription, 
+                       StartDate, EndDate, UnitPrice 
+                FROM Item 
+                WHERE ItemID = ?
+                """;
 
         try {
-            return jdbcTemplate.queryForObject(sql, itemRowMapper(), id);
+            return jdbcTemplate.queryForObject(sql, itemMapper, id);
         } catch (EmptyResultDataAccessException e) {
             throw new RecordNotFoundException();
         } catch (DataAccessException e) {
@@ -60,21 +69,20 @@ public class MySQLItemRepo implements ItemRepo {
     }
 
 
-
     @Override
     public List<Item> getItemsByCategory(LocalDate today, int itemCategoryID) throws InternalErrorException {
         String sql = """
-            SELECT ItemID, ItemCategoryID, ItemName, ItemDescription, 
-                   StartDate, EndDate, UnitPrice 
-            FROM Item 
-            WHERE ItemCategoryID = ? 
-            AND ? >= StartDate 
-            AND (EndDate IS NULL OR ? <= EndDate)
-            ORDER BY ItemName
-            """;
+                SELECT ItemID, ItemCategoryID, ItemName, ItemDescription, 
+                       StartDate, EndDate, UnitPrice 
+                FROM Item 
+                WHERE ItemCategoryID = ? 
+                AND ? >= StartDate 
+                AND (EndDate IS NULL OR ? <= EndDate)
+                ORDER BY ItemName
+                """;
 
         try {
-            return jdbcTemplate.query(sql, itemRowMapper(), itemCategoryID, today, today);
+            return jdbcTemplate.query(sql, itemMapper, itemCategoryID, today, today);
         } catch (DataAccessException e) {
             throw new InternalErrorException(e);
         }
@@ -83,45 +91,16 @@ public class MySQLItemRepo implements ItemRepo {
     @Override
     public List<ItemCategory> getAllItemCategories() throws InternalErrorException {
         String sql = """
-            SELECT ItemCategoryID, ItemCategoryName 
-            FROM ItemCategory 
-            ORDER BY ItemCategoryName
-            """;
+                SELECT ItemCategoryID, ItemCategoryName 
+                FROM ItemCategory 
+                ORDER BY ItemCategoryName
+                """;
 
         try {
-            return jdbcTemplate.query(sql, itemCategoryRowMapper());
+            return jdbcTemplate.query(sql, itemCategoryMapper);
         } catch (DataAccessException e) {
             throw new InternalErrorException(e);
         }
     }
-
-    // Mapper function tells JDBC how to convert a SQL query's columns into a Java Model
-    private RowMapper<Item> itemRowMapper() {
-        return (rs, rowNum) -> {
-            Item item = new Item();
-            item.setItemID(rs.getInt("ItemID"));
-            item.setItemCategoryID(rs.getInt("ItemCategoryID"));
-            item.setItemName(rs.getString("ItemName"));
-            item.setItemDescription(rs.getString("ItemDescription"));
-            item.setStartDate(rs.getObject("StartDate", LocalDate.class));
-
-            // Handle null EndDate
-            if (rs.getObject("EndDate") != null) {
-                item.setEndDate(rs.getObject("EndDate", LocalDate.class));
-            }
-
-            item.setUnitPrice(rs.getBigDecimal("UnitPrice"));
-            return item;
-        };
-    }
-
-    // Mapper function for ItemCategory
-    private RowMapper<ItemCategory> itemCategoryRowMapper() {
-        return (rs, rowNum) -> {
-            ItemCategory category = new ItemCategory();
-            category.setItemCategoryID(rs.getInt("ItemCategoryID"));
-            category.setItemCategoryName(rs.getString("ItemCategoryName"));
-            return category;
-        };
-    }
 }
+

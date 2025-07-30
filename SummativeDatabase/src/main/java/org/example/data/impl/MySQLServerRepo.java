@@ -19,6 +19,9 @@ public class MySQLServerRepo implements ServerRepo {
 
     private final JdbcTemplate jdbcTemplate;
 
+    @Autowired
+    private ServerMapper serverMapper;
+
     public MySQLServerRepo(@Autowired JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
@@ -32,7 +35,7 @@ public class MySQLServerRepo implements ServerRepo {
             """;
 
         try {
-            return jdbcTemplate.queryForObject(sql, new ServerMapper(), id);
+            return jdbcTemplate.queryForObject(sql, serverMapper, id);
         } catch (EmptyResultDataAccessException e) {
             throw new RecordNotFoundException();
         } catch (DataAccessException e) {
@@ -51,7 +54,7 @@ public class MySQLServerRepo implements ServerRepo {
             """;
 
         try {
-            return jdbcTemplate.query(sql, new ServerMapper(), date, date);
+            return jdbcTemplate.query(sql, serverMapper, date, date);
         } catch (DataAccessException e) {
             throw new InternalErrorException(e);
         }

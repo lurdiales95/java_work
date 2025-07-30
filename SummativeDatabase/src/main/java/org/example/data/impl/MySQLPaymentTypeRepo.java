@@ -16,6 +16,9 @@ public class MySQLPaymentTypeRepo implements PaymentTypeRepo {
 
     private final JdbcTemplate jdbcTemplate;
 
+    @Autowired
+    private PaymentTypeMapper paymentTypeMapper;
+
     public MySQLPaymentTypeRepo(@Autowired JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
@@ -25,7 +28,7 @@ public class MySQLPaymentTypeRepo implements PaymentTypeRepo {
         String sql = "SELECT PaymentTypeID, PaymentTypeName FROM PaymentType";
 
         try {
-            return jdbcTemplate.query(sql, new PaymentTypeMapper());
+            return jdbcTemplate.query(sql, paymentTypeMapper);
         } catch (DataAccessException e) {
             throw new InternalErrorException(e);
         }

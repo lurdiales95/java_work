@@ -2,11 +2,13 @@ package org.example.data.mappers;
 
 import org.example.model.Server;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 
+@Component
 public class ServerMapper implements RowMapper<Server> {
 
     @Override

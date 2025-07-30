@@ -18,6 +18,9 @@ public class MySQLTaxRepo implements TaxRepo {
 
     private final JdbcTemplate jdbcTemplate;
 
+    @Autowired
+    private TaxMapper taxMapper;
+
     public MySQLTaxRepo(@Autowired JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
@@ -33,7 +36,7 @@ public class MySQLTaxRepo implements TaxRepo {
             """;
 
         try {
-            return jdbcTemplate.queryForObject(sql, new TaxMapper(), dateOf, dateOf);
+            return jdbcTemplate.queryForObject(sql, taxMapper, dateOf, dateOf);
         } catch (EmptyResultDataAccessException e) {
             throw new RecordNotFoundException();
         } catch (DataAccessException e) {

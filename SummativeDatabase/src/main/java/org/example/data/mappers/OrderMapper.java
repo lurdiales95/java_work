@@ -2,12 +2,14 @@ package org.example.data.mappers;
 
 import org.example.model.Order;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
+@Component
 public class OrderMapper implements RowMapper<Order> {
 
     @Override
