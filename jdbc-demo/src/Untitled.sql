@@ -1,0 +1,2 @@
+-- DELETE FROM `ORDER` WHERE ORDERID >= 1
+ALTER TABLE `ORDER` auto_increment = 1

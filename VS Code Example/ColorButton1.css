@@ -1,0 +1,7 @@
+import 'SpoilerButton.css'
+
+function ColorButton1({color, handleColorSelect}) { 
+    return (<button onClick = 
+{handleColorSelect} 
+        {col
+        

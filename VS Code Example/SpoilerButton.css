@@ -1,0 +1,12 @@
+import './style.css';
+
+function SpoilerButton() {
+    function handleSpoilerClic() {
+        const spoilerElement = document.getElementByID('spoiler');
+        spoilerElement.style.display = 'block'
+    }
+
+    return (
+        <div className="spoiler-container">
+                )
+}
