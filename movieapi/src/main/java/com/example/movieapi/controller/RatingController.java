@@ -1,6 +1,5 @@
 package com.example.movieapi.controller;
 
-
 import com.example.movieapi.model.Rating;
 import com.example.movieapi.repository.RatingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
