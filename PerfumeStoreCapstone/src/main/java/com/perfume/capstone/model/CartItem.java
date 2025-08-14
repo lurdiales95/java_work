@@ -1,23 +1,23 @@
-package com.perfume.capstone.repository;
+package com.perfume.capstone.model;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 public class CartItem {
-    private final Perfume candle;
+    private final Perfume perfume;
     private int quantity;
     private final BigDecimal price;
     private BigDecimal extendedPrice;
 
-    public CartItem(Perfume candle, int quantity, BigDecimal price) {
-        this.candle = candle;
+    public CartItem(Perfume perfume, int quantity, BigDecimal price) {
+        this.perfume = perfume;
         this.price = price;
         this.quantity = quantity;
         this.extendedPrice = price.multiply(BigDecimal.valueOf(quantity)).setScale(2, RoundingMode.HALF_UP);
     }
 
-    public Perfume getCandle() {
-        return candle;
+    public Perfume getPerfume() {
+        return perfume;
     }
 
     public int getQuantity() {
@@ -43,6 +43,6 @@ public class CartItem {
     @Override
     public String toString() {
         return String.format("%s - Qty: %d - Price: $%s - Extended: $%s",
-                candle.toString(), quantity, price, extendedPrice);
+                perfume.toString(), quantity, price, extendedPrice);
     }
 }
