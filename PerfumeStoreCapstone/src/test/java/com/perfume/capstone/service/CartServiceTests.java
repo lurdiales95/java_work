@@ -1,11 +1,7 @@
 package com.perfume.capstone.service;
 
-
-package com.example.Capstone_Java_Console_App_Inventory_Manager;
-
-import com.example.Capstone_Java_Console_App_Inventory_Manager.model.*;
-import com.example.Capstone_Java_Console_App_Inventory_Manager.repository.*;
-import com.example.Capstone_Java_Console_App_Inventory_Manager.service.*;
+import com.perfume.capstone.model.*;
+import com.perfume.capstone.repository.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -15,42 +11,44 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class CartServiceTests {
-    private InventoryRepository inventoryRepository;
+
+    private PerfumeRepository perfumeRepository;
     private CartService cartService;
 
     // Test data
-    private Candle candle1;
-    private Candle candle2;
-    private InventoryCandleItem inventoryItem1;
-    private InventoryCandleItem inventoryItem2;
+    private Perfume perfume1;
+    private Perfume perfume2;
+    private InventoryPerfumeItem inventoryItem1;
+    private InventoryPerfumeItem inventoryItem2;
 
     @BeforeEach
     void setUp() {
         // Create fresh instances for each test
-        inventoryRepository = new InMemoryInventoryRepository();
-        cartService = new CartService(inventoryRepository);
+        perfumeRepository = new InMemoryPerfumeRepository();
+        cartService = new CartService(perfumeRepository);
 
-        candle1 = new Candle("5905", "Japanese Cherry Blossom", "Botanical & Blooms", "Year Round");
-        candle2 = new Candle("6757", "Sweater Weather", "Fresh & Clean", "Winter");
+        // Create test perfumes using your exact 4-field structure
+        perfume1 = new Perfume("5905", "Japanese Cherry Blossom", "Botanical & Blooms", "Year Round");
+        perfume2 = new Perfume("6757", "Sweater Weather", "Fresh & Clean", "Winter");
 
-        // FIXED: Create both inventory items properly
-        inventoryItem1 = new InventoryCandleItem(candle1, 10, new BigDecimal("26.95"));
-        inventoryItem2 = new InventoryCandleItem(candle2, 5, new BigDecimal("24.99"));
+        // Create inventory items using your exact class name
+        inventoryItem1 = new InventoryPerfumeItem(perfume1, 10, new BigDecimal("26.95"));
+        inventoryItem2 = new InventoryPerfumeItem(perfume2, 5, new BigDecimal("24.99"));
 
-        // Add items to inventory
-        inventoryRepository.add(inventoryItem1);
-        inventoryRepository.add(inventoryItem2);
+        // Add items to inventory using your exact method names
+        perfumeRepository.add(inventoryItem1);
+        perfumeRepository.add(inventoryItem2);
     }
 
-    // Helper method to find CartItem by ProductID
+    // Helper method to find CartItem by ProductID using your exact field names
     private CartItem findCartItemByProductID(List<CartItem> cartItems, String productID) {
         return cartItems.stream()
-                .filter(item -> item.getCandle().productID().equals(productID))
+                .filter(item -> item.getPerfume().productID().equals(productID))
                 .findFirst()
                 .orElse(null);
     }
 
-    // Helper method to get quantity for an ProductID from cart contents
+    // Helper method to get quantity for a ProductID from cart contents
     private int getQuantityByProductID(List<CartItem> cartItems, String productID) {
         CartItem item = findCartItemByProductID(cartItems, productID);
         return item != null ? item.getQuantity() : 0;
@@ -62,9 +60,9 @@ public class CartServiceTests {
         Result<Void> result = cartService.addToCart("5905", 2);
 
         System.out.println(result.isSuccess());
-        // Assert
+        // Assert - using your exact success message format
         assertTrue(result.isSuccess());
-        assertEquals("Added 2 candles of 'Japanese Cherry Blossom' to cart", result.getMessage());
+        assertEquals("Added 2 perfumes of 'Japanese Cherry Blossom' to cart", result.getMessage());
 
         // Verify cart contents
         List<CartItem> cartContents = cartService.getCartContents();
@@ -77,7 +75,7 @@ public class CartServiceTests {
         // Act
         Result<Void> result = cartService.addToCart(null, 1);
 
-        // Assert
+        // Assert - using your exact error message
         assertFalse(result.isSuccess());
         assertEquals("ProductID cannot be null or empty", result.getMessage());
         assertTrue(cartService.isEmpty());
@@ -128,11 +126,11 @@ public class CartServiceTests {
     }
 
     @Test
-    void addToCart_BookNotFound_ReturnsFailure() {
+    void addToCart_ProductNotFound_ReturnsFailure() {
         // Act
         Result<Void> result = cartService.addToCart("invalid-id", 1);
 
-        // Assert
+        // Assert - using your exact error message format
         assertFalse(result.isSuccess());
         assertEquals("Product not found with ProductID invalid-id", result.getMessage());
         assertTrue(cartService.isEmpty());
@@ -143,7 +141,7 @@ public class CartServiceTests {
         // Act - trying to add more than available (10 in stock)
         Result<Void> result = cartService.addToCart("5905", 15);
 
-        // Assert
+        // Assert - using your exact error message format
         assertFalse(result.isSuccess());
         assertEquals("Not enough stock. Available: 10, Requested: 15", result.getMessage());
         assertTrue(cartService.isEmpty());
@@ -156,7 +154,7 @@ public class CartServiceTests {
 
         // Assert
         assertTrue(result.isSuccess());
-        assertEquals("Added 10 candles of 'Japanese Cherry Blossom' to cart", result.getMessage());
+        assertEquals("Added 10 perfumes of 'Japanese Cherry Blossom' to cart", result.getMessage());
 
         List<CartItem> cartContents = cartService.getCartContents();
         assertEquals(10, getQuantityByProductID(cartContents, "5905"));
@@ -172,8 +170,7 @@ public class CartServiceTests {
         assertTrue(result1.isSuccess());
         assertTrue(result2.isSuccess());
 
-
-        assertEquals("Added 2 candles of 'Japanese Cherry Blossom' to cart", result2.getMessage());
+        assertEquals("Added 2 perfumes of 'Japanese Cherry Blossom' to cart", result2.getMessage());
 
         List<CartItem> cartContents = cartService.getCartContents();
         assertEquals(5, getQuantityByProductID(cartContents, "5905"));
@@ -196,7 +193,7 @@ public class CartServiceTests {
     }
 
     @Test
-    void addToCart_MultipleDifferentBooks_ReturnsSuccess() {
+    void addToCart_MultipleDifferentPerfumes_ReturnsSuccess() {
         // Act
         Result<Void> result1 = cartService.addToCart("5905", 2);
         Result<Void> result2 = cartService.addToCart("6757", 1);
@@ -219,9 +216,9 @@ public class CartServiceTests {
         // Act
         Result<Void> result = cartService.removeFromCart("5905", 2);
 
-        // Assert
+        // Assert - using your exact success message format
         assertTrue(result.isSuccess());
-        assertEquals("Removed 2 candles of 'Japanese Cherry Blossom' from cart", result.getMessage());
+        assertEquals("Removed 2 perfumes of 'Japanese Cherry Blossom' from cart", result.getMessage());
 
         List<CartItem> cartContents = cartService.getCartContents();
         assertEquals(3, getQuantityByProductID(cartContents, "5905"));
@@ -235,9 +232,9 @@ public class CartServiceTests {
         // Act
         Result<Void> result = cartService.removeFromCart("5905", 3);
 
-        // Assert
+        // Assert - using your exact success message format
         assertTrue(result.isSuccess());
-        assertEquals("Removed all of 'Japanese Cherry Blossom' candles from cart", result.getMessage());
+        assertEquals("Removed all of 'Japanese Cherry Blossom' perfumes from cart", result.getMessage());
 
         List<CartItem> cartContents = cartService.getCartContents();
         assertNull(findCartItemByProductID(cartContents, "5905"));
@@ -254,7 +251,7 @@ public class CartServiceTests {
 
         // Assert
         assertTrue(result.isSuccess());
-        assertEquals("Removed all of 'Japanese Cherry Blossom' candles from cart", result.getMessage());
+        assertEquals("Removed all of 'Japanese Cherry Blossom' perfumes from cart", result.getMessage());
 
         List<CartItem> cartContents = cartService.getCartContents();
         assertNull(findCartItemByProductID(cartContents, "5905"));
@@ -266,8 +263,7 @@ public class CartServiceTests {
         // Act
         Result<Void> result = cartService.removeFromCart("5905", 1);
 
-
-        // Assert
+        // Assert - using your exact error message
         assertFalse(result.isSuccess());
         assertEquals("Item not in cart", result.getMessage());
     }
@@ -307,7 +303,7 @@ public class CartServiceTests {
         // Act
         Result<BigDecimal> result = cartService.getTotalPrice();
 
-        // Assert
+        // Assert - using your exact success message
         assertTrue(result.isSuccess());
         assertEquals("Total calculated successfully", result.getMessage());
         assertEquals(0, result.getData().compareTo(new BigDecimal("0.00")));
@@ -332,6 +328,7 @@ public class CartServiceTests {
         // Arrange
         cartService.addToCart("5905", 2); // 2 * 26.95 = 53.90
         cartService.addToCart("6757", 1); // 1 * 24.99 = 24.99
+
         // Act
         Result<BigDecimal> result = cartService.getTotalPrice();
 
@@ -342,26 +339,14 @@ public class CartServiceTests {
     }
 
     @Test
-    void getTotalPrice_InvalidItemInCart_ReturnsFailure() {
-//        cartService.addToCart("5905", 2); // 2 * 26.95 = 53.90
-//        cartService.addToCart("6757", 1); // 1 * 24.99 = 24.99
-//
-//        Result<BigDecimal> result = cartService.getTotalPrice();
-//        assertTrue(result.isFailure());
-//        assertEquals("Total calculated successfully"), result.getMessage();
-//        assertEquals(BigDecimal(77.77), result.getData());
-//
-//    }
+    void checkout_EmptyCart_ReturnsFailure() {
+        // Act
+        Result<String> result = cartService.checkout();
 
-//    @Test
-//    void checkout_EmptyCart_ReturnsFailure() {
-//        // Act
-//        Result<String> result = cartService.checkout();
-//
-//        // Assert
-//        assertFalse(result.isSuccess());
-//        assertEquals("Cart is empty", result.getMessage());
-//        assertNull(result.getData());
+        // Assert - using your exact error message
+        assertFalse(result.isSuccess());
+        assertEquals("Cart is empty", result.getMessage());
+        assertNull(result.getData());
     }
 
     @Test
@@ -373,32 +358,20 @@ public class CartServiceTests {
         // Act
         Result<String> result = cartService.checkout();
 
-        // Assert
+        // Assert - using your exact success message format
         assertTrue(result.isSuccess());
         assertEquals("Checkout successful! Total: $78.89", result.getMessage());
         assertEquals("$78.89", result.getData());
 
-
         // Verify cart is empty after checkout
         assertTrue(cartService.isEmpty());
 
-        // Verify inventory was updated
-        InventoryCandleItem item1 = inventoryRepository.getByProductID("5905");
-        InventoryCandleItem item2 = inventoryRepository.getByProductID("6757");
+        // Verify inventory was updated using your exact method names
+        InventoryPerfumeItem item1 = perfumeRepository.getByProductID("5905");
+        InventoryPerfumeItem item2 = perfumeRepository.getByProductID("6757");
         assertEquals(8, item1.getQuantity()); // 10 - 2 = 8
         assertEquals(4, item2.getQuantity()); // 5 - 1 = 4
-
-        // equal hashcode method to add inside the models. Tests to see if one object equals another.
     }
-
-//    @Test
-//    void checkout_InvalidItemInCart_ReturnsFailure() {
-//        // This test may need to be updated based on the actual implementation
-//        // This CartService doesn't validate items during checkout in the same way
-//        // Should be redesigned based on requirements
-//        // Note:This implementation may not handle this scenario the same way
-//        // This test would need to be updated based on actual error handling requirements
-//    }
 
     @Test
     void getCartContents_EmptyCart_ReturnsEmptyList() {
@@ -486,23 +459,24 @@ public class CartServiceTests {
         assertTrue(checkoutResult.isSuccess());
         assertTrue(cartService.isEmpty());
 
-        // Verify inventory updates
-        InventoryCandleItem item1 = inventoryRepository.getByProductID("5905");
-        InventoryCandleItem item2 = inventoryRepository.getByProductID("6757");
+        // Verify inventory updates using your exact method names
+        InventoryPerfumeItem item1 = perfumeRepository.getByProductID("5905");
+        InventoryPerfumeItem item2 = perfumeRepository.getByProductID("6757");
         assertEquals(6, item1.getQuantity()); // 10 - 4
         assertEquals(3, item2.getQuantity()); // 5 - 2
     }
 
     @Test
     void addToCart_DifferentScentTypes_WorksCorrectly() {
-        Candle floralCandle = new Candle("1001", "Rose Petals", "Botanical & Blooms", "Spring");
-        Candle fruitCandle = new Candle("1002", "Orange Citrus", "Fruity & Bright", "Summer");
+        // Create perfumes with different scent types using your exact 4-field structure
+        Perfume floralPerfume = new Perfume("1001", "Rose Petals", "Botanical & Blooms", "Spring");
+        Perfume fruitPerfume = new Perfume("1002", "Orange Citrus", "Fruity & Bright", "Summer");
 
-        InventoryCandleItem floralItem = new InventoryCandleItem(floralCandle, 15, new BigDecimal("22.50"));
-        InventoryCandleItem fruitItem = new InventoryCandleItem(fruitCandle, 8, new BigDecimal("28.75"));
+        InventoryPerfumeItem floralItem = new InventoryPerfumeItem(floralPerfume, 15, new BigDecimal("22.50"));
+        InventoryPerfumeItem fruitItem = new InventoryPerfumeItem(fruitPerfume, 8, new BigDecimal("28.75"));
 
-        inventoryRepository.add(floralItem);
-        inventoryRepository.add(fruitItem);
+        perfumeRepository.add(floralItem);
+        perfumeRepository.add(fruitItem);
 
         Result<Void> result1 = cartService.addToCart("1001", 3);
         Result<Void> result2 = cartService.addToCart("1002", 2);
@@ -514,21 +488,21 @@ public class CartServiceTests {
         assertEquals(2, contents.size());
         assertEquals(3, getQuantityByProductID(contents, "1001"));
         assertEquals(2, getQuantityByProductID(contents, "1002"));
-
     }
+
     @Test
-    void addToCart_SeasonalCandles_WorksCorrectly() {
+    void addToCart_SeasonalPerfumes_WorksCorrectly() {
+        // Create seasonal perfumes using your exact structure
+        Perfume winterPerfume = new Perfume("2001", "Winter Wonderland", "Fresh & Clean", "Winter");
+        Perfume yearRoundPerfume = new Perfume("2002", "Vanilla Dream", "Treats & Sweets", "Year Round");
 
-        Candle winterCandle = new Candle("2001", "Winter Wonderland", "Fresh & Clean", "Winter");
-        Candle yearRoundCandle = new Candle("2002", "Vanilla Dream", "Treats & Sweets", "Year Round");
+        InventoryPerfumeItem winterItem = new InventoryPerfumeItem(winterPerfume, 20, new BigDecimal("31.99"));
+        InventoryPerfumeItem yearRoundItem = new InventoryPerfumeItem(yearRoundPerfume, 25, new BigDecimal("19.99"));
 
-        InventoryCandleItem winterItem = new InventoryCandleItem(winterCandle, 20, new BigDecimal("31.99"));
-        InventoryCandleItem yearRoundItem = new InventoryCandleItem(yearRoundCandle, 25, new BigDecimal("19.99"));
+        perfumeRepository.add(winterItem);
+        perfumeRepository.add(yearRoundItem);
 
-        inventoryRepository.add(winterItem);
-        inventoryRepository.add(yearRoundItem);
-
-        Result<Void> result1 =cartService.addToCart("2001", 2);
+        Result<Void> result1 = cartService.addToCart("2001", 2);
         Result<Void> result2 = cartService.addToCart("2002", 4);
 
         assertTrue(result1.isSuccess());

@@ -1,6 +1,7 @@
 package com.perfume.capstone.repository;
 
 import com.perfume.capstone.model.InventoryPerfumeItem;
+import com.perfume.capstone.model.Perfume;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -9,11 +10,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class InMemoryInventoryRepository implements InventoryRepository {
+public class InMemoryPerfumeRepository implements PerfumeRepository {
 
     private final Map<String, InventoryPerfumeItem> inventory = new HashMap<>();
 
-    public InMemoryInventoryRepository() {
+    public InMemoryPerfumeRepository() {
         initializeSampleData();
     }
 

@@ -4,7 +4,7 @@ import com.perfume.capstone.model.InventoryPerfumeItem;
 
 import java.util.List;
 
-public interface InventoryRepository {
+public interface PerfumeRepository {
 
     List<InventoryPerfumeItem> getAll();
 

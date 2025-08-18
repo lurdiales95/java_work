@@ -3,7 +3,7 @@ package com.perfume.capstone.service;
 import com.perfume.capstone.model.CartItem;
 import com.perfume.capstone.model.InventoryPerfumeItem;
 import com.perfume.capstone.model.Result;
-import com.perfume.capstone.repository.InventoryRepository;
+import com.perfume.capstone.repository.PerfumeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,12 +14,12 @@ import java.util.*;
 @Service
 public class CartService {
 
-    private final InventoryRepository inventoryRepository;
+    private final PerfumeRepository perfumeRepository;
     private final Map<String, CartItem> cart = new HashMap<>(); // ProductID -> CartItem
 
     @Autowired
-    public CartService(InventoryRepository inventoryRepository) {
-        this.inventoryRepository = inventoryRepository;
+    public CartService(PerfumeRepository perfumeRepository) {
+        this.perfumeRepository = perfumeRepository;
     }
     public Result<Void> addToCart(String productID, int quantity) {
         if (productID == null || productID.trim().isEmpty()) {
@@ -29,7 +29,7 @@ public class CartService {
             return new Result<>(false, "Quantity must be greater than 0", null);
         }
 
-        InventoryPerfumeItem item = inventoryRepository.getByProductID(productID);
+        InventoryPerfumeItem item = perfumeRepository.getByProductID(productID);
         if (item == null) {
             return new Result<>(false, "Product not found with ProductID " + productID, null);
         }
@@ -111,9 +111,9 @@ public class CartService {
             CartItem cartItem = entry.getValue();
             int purchasedQuantity = cartItem.getQuantity();
 
-            InventoryPerfumeItem item = inventoryRepository.getByProductID(productID);
+            InventoryPerfumeItem item = perfumeRepository.getByProductID(productID);
             item.setQuantity(item.getQuantity() - purchasedQuantity);
-            inventoryRepository.update(item);
+            perfumeRepository.update(item);
         }
 
         cart.clear();

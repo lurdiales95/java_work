@@ -17,7 +17,7 @@ public class InventoryManagerApp implements CommandLineRunner {
     @Autowired
     private Inventory inventory;
 
-    @Value("${candlestore.mode:kiosk}")
+    @Value("${perfumestore.mode:kiosk}")
     private String mode;
 
     public static void main(String[] args) {
@@ -32,4 +32,5 @@ public class InventoryManagerApp implements CommandLineRunner {
             kiosk.run();
         }
     }
+
 }

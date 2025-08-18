@@ -13,10 +13,10 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 
-public class CsvInventoryRepository implements InventoryRepository {
+public class CsvPerfumeRepository implements PerfumeRepository {
 
     private final Map<String, InventoryPerfumeItem> inventory = new HashMap<>();
-    @Value("${candle-inventory.csv.filepath:data/candle-inventory.csv}")
+    @Value("${perfume-inventory.csv.filepath:data/perfume-inventory.csv}")
     private String filename;
 
     // We must invoke load from file to the post construct because the @Value  won't be bound until after the object is created
