@@ -2,6 +2,8 @@ package com.perfume.capstone.repository;
 
 import com.perfume.capstone.model.InventoryPerfumeItem;
 import com.perfume.capstone.model.Perfume;
+import org.springframework.context.annotation.Primary;
+import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -10,6 +12,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Repository
+@Primary
 public class InMemoryPerfumeRepository implements PerfumeRepository {
 
     private final Map<String, InventoryPerfumeItem> inventory = new HashMap<>();

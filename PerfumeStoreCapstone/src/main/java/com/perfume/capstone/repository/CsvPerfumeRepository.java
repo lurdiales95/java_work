@@ -6,13 +6,14 @@ import com.perfume.capstone.model.InventoryPerfumeItem;
 import com.perfume.capstone.model.Perfume;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Repository;
 
 import java.io.*;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
-
+@Repository
 public class CsvPerfumeRepository implements PerfumeRepository {
 
     private final Map<String, InventoryPerfumeItem> inventory = new HashMap<>();
