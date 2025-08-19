@@ -13,7 +13,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Repository
-@Primary
 public class InMemoryPerfumeRepository implements PerfumeRepository {
 
     private final Map<String, InventoryPerfumeItem> inventory = new HashMap<>();
@@ -101,7 +100,7 @@ public class InMemoryPerfumeRepository implements PerfumeRepository {
     }
 
     @Override
-    public void delete(String productID) {
+    public void delete(int productID) {
         if (productID == null || productID.trim().isEmpty()) {
             throw new IllegalArgumentException("ProductID cannot be null or empty.");
         }

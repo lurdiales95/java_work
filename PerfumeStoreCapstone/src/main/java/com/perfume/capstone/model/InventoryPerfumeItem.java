@@ -20,7 +20,7 @@ public class InventoryPerfumeItem {
 
     public void setQuantity(int quantity) {
         if (quantity < 0) {
-            throw new IllegalArgumentException("The quantity of the candles cannot be negative.");
+            throw new IllegalArgumentException("The quantity of perfumes cannot be negative.");
         }
         this.quantity = quantity;
     }

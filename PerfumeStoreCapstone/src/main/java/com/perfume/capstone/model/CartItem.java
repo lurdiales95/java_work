@@ -7,13 +7,13 @@ public class CartItem {
     private final Perfume perfume;
     private int quantity;
     private final BigDecimal price;
-    private BigDecimal extendedPrice;
+    private BigDecimal totalPrice;
 
     public CartItem(Perfume perfume, int quantity, BigDecimal price) {
         this.perfume = perfume;
         this.price = price;
         this.quantity = quantity;
-        this.extendedPrice = price.multiply(BigDecimal.valueOf(quantity)).setScale(2, RoundingMode.HALF_UP);
+        this.totalPrice = price.multiply(BigDecimal.valueOf(quantity)).setScale(2, RoundingMode.HALF_UP);
     }
 
     public Perfume getPerfume() {
@@ -29,20 +29,20 @@ public class CartItem {
             throw new IllegalArgumentException("Quantity cannot be negative");
         }
         this.quantity = quantity;
-        this.extendedPrice = this.price.multiply(BigDecimal.valueOf(quantity)).setScale(2, RoundingMode.HALF_UP);
+        this.totalPrice = this.price.multiply(BigDecimal.valueOf(quantity)).setScale(2, RoundingMode.HALF_UP);
     }
 
     public BigDecimal getPrice() {
         return price;
     }
 
-    public BigDecimal getExtendedPrice() {
-        return extendedPrice;
+    public BigDecimal getTotalPrice() {
+        return totalPrice;
     }
 
     @Override
     public String toString() {
         return String.format("%s - Qty: %d - Price: $%s - Extended: $%s",
-                perfume.toString(), quantity, price, extendedPrice);
+                perfume.toString(), quantity, price, totalPrice);
     }
 }

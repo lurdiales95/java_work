@@ -93,7 +93,7 @@ public class KioskIO {
             String productID = item.getPerfume().productID();
             String productName = item.getPerfume().productName();
             int quantity = item.getQuantity();
-            BigDecimal extendedPrice = item.getExtendedPrice();
+            BigDecimal totalPrice = item.getTotalPrice();
 
             // Truncate product name if too long to fit in the display
             if (productName.length() > 35) {
@@ -101,7 +101,7 @@ public class KioskIO {
             }
 
             System.out.printf("%-18s %-35s %3d       $%6.2f%n",
-                    productID, productName, quantity, extendedPrice);
+                    productID, productName, quantity, totalPrice);
         }
     }
 

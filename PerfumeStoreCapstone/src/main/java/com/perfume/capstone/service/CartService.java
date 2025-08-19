@@ -21,9 +21,10 @@ public class CartService {
     public CartService(PerfumeRepository perfumeRepository) {
         this.perfumeRepository = perfumeRepository;
     }
-    public Result<Void> addToCart(String productID, int quantity) {
-        if (productID == null || productID.trim().isEmpty()) {
-            return new Result<>(false, "ProductID cannot be null or empty", null);
+
+    public Result<Void> addToCart(int productID, int quantity) {
+        if (productID <= 0) {
+            return new Result<>(false, "ProductID must be positive", null);
         }
         if (quantity <= 0) {
             return new Result<>(false, "Quantity must be greater than 0", null);
@@ -34,7 +35,8 @@ public class CartService {
             return new Result<>(false, "Product not found with ProductID " + productID, null);
         }
 
-        int currentCartQuantity = cart.containsKey(productID) ? cart.get(productID).getQuantity() : 0;
+        String productKey = String.valueOf(productID); // Convert to String for cart map key
+        int currentCartQuantity = cart.containsKey(productKey) ? cart.get(productKey).getQuantity() : 0;
         int newTotalQuantity = currentCartQuantity + quantity;
 
         if (newTotalQuantity > item.getQuantity()) {
@@ -43,55 +45,56 @@ public class CartService {
                             item.getQuantity(), newTotalQuantity), null);
         }
 
-        if (cart.containsKey(productID)) {
+        if (cart.containsKey(productKey)) {
             // Update existing cart item
-            CartItem existingCartItem = cart.get(productID);
+            CartItem existingCartItem = cart.get(productKey);
             existingCartItem.setQuantity(newTotalQuantity);
         } else {
             // Create new cart item
             BigDecimal price = item.getPrice().setScale(2, RoundingMode.HALF_UP);
             CartItem newCartItem = new CartItem(item.getPerfume(), newTotalQuantity, price);
-            cart.put(productID, newCartItem);
+            cart.put(productKey, newCartItem);
         }
 
         return new Result<>(true,
-                String.format("Added %d perfumes of '%s' to cart", quantity, item.getPerfume().productName()), null);
+                String.format("Added %d of '%s' to cart", quantity, item.getPerfume().productName()), null);
     }
 
-    public Result<Void> removeFromCart(String productID, int quantity) {
-        if (productID == null || productID.trim().isEmpty()) {
-            return new Result<>(false, "ProductID cannot be null or empty", null);
+    public Result<Void> removeFromCart(int productID, int quantity) {
+        if (productID <= 0) {
+            return new Result<>(false, "ProductID must be positive", null);
         }
         if (quantity <= 0) {
             return new Result<>(false, "Quantity must be greater than 0", null);
         }
 
-        if (!cart.containsKey(productID)) {
+        String productKey = String.valueOf(productID); // Convert to String for cart map key
+        if (!cart.containsKey(productKey)) {
             return new Result<>(false, "Item not in cart", null);
         }
 
-        CartItem cartItem = cart.get(productID);
+        CartItem cartItem = cart.get(productKey);
         int currentQuantity = cartItem.getQuantity();
         String productName = cartItem.getPerfume().productName();
 
         if (quantity >= currentQuantity) {
-            cart.remove(productID);
+            cart.remove(productKey);
             return new Result<>(true,
-                    String.format("Removed all of '%s' perfumes from cart", productName), null);
+                    String.format("Removed all '%s' from cart", productName), null);
         } else {
             cartItem.setQuantity(currentQuantity - quantity);
             return new Result<>(true,
-                    String.format("Removed %d perfumes of '%s' from cart", quantity, productName), null);
+                    String.format("Removed %d of '%s' from cart", quantity, productName), null);
         }
     }
+
     public Result<BigDecimal> getTotalPrice() {
         BigDecimal total = BigDecimal.ZERO;
 
         for (CartItem cartItem : cart.values()) {
-            total = total.add(cartItem.getExtendedPrice());
+            total = total.add(cartItem.getTotalPrice());
         }
         return new Result<>(true, "Total calculated successfully", total.setScale(2, RoundingMode.HALF_UP));
-
     }
 
     public Result<String> checkout() {
@@ -107,11 +110,13 @@ public class CartService {
 
         // Update inventory quantities
         for (Map.Entry<String, CartItem> entry : cart.entrySet()) {
-            String productID = entry.getKey();
+            String productKey = entry.getKey();
             CartItem cartItem = entry.getValue();
             int purchasedQuantity = cartItem.getQuantity();
 
-            InventoryPerfumeItem item = perfumeRepository.getByProductID(productID);
+            // Convert String key back to int for repository call
+            int productIdInt = Integer.parseInt(productKey);
+            InventoryPerfumeItem item = perfumeRepository.getByProductID(productIdInt);
             item.setQuantity(item.getQuantity() - purchasedQuantity);
             perfumeRepository.update(item);
         }
