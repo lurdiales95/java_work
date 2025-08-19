@@ -10,4 +10,6 @@ public class PerfumeStoreWebApp {  // Renamed for clarity
         SpringApplication.run(PerfumeStoreWebApp.class, args);
     }
 
+    // That's it! No CommandLineRunner, no console dependencies
+    // Spring Boot will start the web server automatically
 }
